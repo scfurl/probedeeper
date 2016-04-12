@@ -1,5 +1,4 @@
-GSEA.program.location <- paste(rootpath, "/Bioinformatics Resources/GSEA.SF/GSEA/GSEA.1.0.R", sep="")   #  R source program (change pathname to the rigth location in local machine)
-source(GSEA.program.location, verbose=T, max.deparse.length=9999) 
+
 
 setClass("MultipleClassGSEAObject", representation(
   ObjectInfo="list",
@@ -14,16 +13,16 @@ setClass("MultipleClassGSEAObject", representation(
 MultipleClassGSEAnew<-function(data.GSEA, Comparison1, Comparison2, GMTList, classvec=classvec.sel, runGSEAcode=TRUE, reshuffling.type, uniquelabel=""){
 #   os<-Sys.info()['sysname']
 #   if(os=="Darwin"){GSEA.program.location <- "/Library/Frameworks/R.framework/Resources/library/GSEA/GSEA.1.0.R"}   #  R source program (change pathname to the rigth location in local machine)
-#   source(GSEA.program.location, verbose=T, max.deparse.length=9999) 
+#   source(GSEA.program.location, verbose=T, max.deparse.length=9999)
   datestamp<-format(Sys.Date(), format="%Y%m%d")
   if(uniquelabel!=""){
     uniquelabel<-paste("-", uniquelabel, sep="")
   }
    rdirectory<-paste("GSEA/", datestamp, uniquelabel, "/", sep="")
    fdirectory<-paste(rdirectory, "Files-", datestamp, "/", sep="")
-   
+
    odirectory<-paste(rdirectory, "Output-", datestamp, "/", sep="")
-   
+
    GMTfile<-paste(fdirectory, "GMTFile.gmt", sep="")
    Comp1<-Comparison1
    Comp2<-Comparison2
@@ -36,7 +35,7 @@ MultipleClassGSEAnew<-function(data.GSEA, Comparison1, Comparison2, GMTList, cla
                       Signreverse=!substring(Comparison1,1,1)<substring(Comparison2,1,1))
    Objectinfo<-list(GSEACompList=GSEAcomplist, GMTList=GMTList, Directory=odirectory, TimeStamp=Sys.time())
   MCGO<-new("MultipleClassGSEAObject", ObjectInfo=Objectinfo,
-                            Data=list(length=GSEAcomplist[["Number"]]), 
+                            Data=list(length=GSEAcomplist[["Number"]]),
                             PlotData=list(length=GSEAcomplist[["Number"]]))
   MCGO@Data<-rep(list(list()), length(GMTList))
   MCGO@PlotData<-rep(list(data.frame(max=numeric(0), min=numeric(0), lRES=numeric(0), uRES=numeric(0), dotted=numeric(0))), length(GMTList))
@@ -65,7 +64,7 @@ MultipleClassGSEAnew<-function(data.GSEA, Comparison1, Comparison2, GMTList, cla
     dir.create(wdirectory, showWarnings = FALSE)
       RunGSEA(in.data = paste(fdirectory, GSEAcomplist$Prefix[i], ".gct", sep=""),
               in.cls =paste(fdirectory, GSEAcomplist$Prefix[i], ".cls", sep=""),
-              in.gmt =  GMTfile, 
+              in.gmt =  GMTfile,
               directory      = wdirectory,
               prefix            = GSEAcomplist$Prefix[i],
               reshuffling.type      = reshuffling.type,
@@ -135,14 +134,14 @@ PlotMultipleClassGSEAObject<-function(MCGO, index, plotcols=rep("Black", length(
   for(i in 1:length(MCGO@Data[[index]])){
       statindex<-match(names(MCGO@ObjectInfo[[2]])[index], MCGO@Stats[[i]]$GS)
       fdr[i]<-round(MCGO@Stats[[i]]$FDR.q.val[statindex], 3)
-  }   
+  }
   #fdrstats<-data.frame(FDR=fdr, lRES=rep(min(MCGO@PlotData[[index]]$lRES)-0.2, length(MCGO@Data[[index]])))
   x<-vector()
   y<-vector()
   lRES<-vector()
   lRES=rep(min(MCGO@PlotData[[index]]$lRES), length(MCGO@Data[[index]]))
   for(i in 1:length(fdr)){
-    x[i]<--300 
+    x[i]<--300
     y[i]<-lRES[i]-((i-1)*.1)
   }
   for(i in 1:length(MCGO@Data[[index]])){
@@ -184,7 +183,7 @@ MCGOpdf<-function(MCGO, filename="", plotcols=rep("black", length(names(MCGO@Obj
 }
 
 RunGSEA<-function(in.data, in.cls, in.gmt, directory, prefix, signreverse, reshuffling.type){
-  # GSEA 1.0 -- Gene Set Enrichment Analysis / Broad Institute 
+  # GSEA 1.0 -- Gene Set Enrichment Analysis / Broad Institute
   # R script to run GSEA
   ######command###########
   GSEA( # Input/Output Files :-------------------------------------------
@@ -195,7 +194,7 @@ RunGSEA<-function(in.data, in.cls, in.gmt, directory, prefix, signreverse, reshu
         #  Program parameters :-------------------------------------------------------------------------------------------------------------------------
         doc.string            = prefix,        # Documentation string used as a prefix to name result files (default: "GSEA.analysis")
         non.interactive.run   = F,               # Run in interactive (i.e. R GUI) or batch (R command line) mode (default: F)
-        reshuffling.type      = reshuffling.type, # Type of permutation reshuffling: "sample.labels" or "gene.labels" (default: "sample.labels" 
+        reshuffling.type      = reshuffling.type, # Type of permutation reshuffling: "sample.labels" or "gene.labels" (default: "sample.labels"
         nperm                 = 1000,            # Number of random permutations (default: 1000)
         weighted.score.type   =  1,              # Enrichment correlation-based weighting: 0=no weight (KS), 1= weigthed, 2 = over-weigthed (default: 1)
         nom.p.val.threshold   = -1,              # Significance threshold for nominal p-vals for gene sets (default: -1, no thres)
@@ -215,13 +214,13 @@ RunGSEA<-function(in.data, in.cls, in.gmt, directory, prefix, signreverse, reshu
         OLD.GSEA              = F,               # Use original (old) version of GSEA (default: F)
         use.fast.enrichment.routine = T          # Use faster routine to compute enrichment for random permutations (default: T)
   )
-  
+
 }
 
 ExtractMCGO<-function(MCGO, name){
   if(length(which(names(MCGO@ObjectInfo$GMTList) %in% name))==0){
-   stop("Data Not Found") 
-  } 
+   stop("Data Not Found")
+  }
   else
   index<-which(names(MCGO@ObjectInfo$GMTList) %in% name)
   dflist<-MCGO@Data[[index]]
@@ -241,7 +240,7 @@ dir.create(odirectory, showWarnings=FALSE)
   gsea.write.cls(data.cls, file.cls)
   gsea.write.gct(data.gct, file.gct)
 RunGSEA(file.gct, file.cls, GMTfile, odirectory, prefix=format(Sys.time(), "%a-%b-%d-%Y-%X"), signreverse, reshuffling.type)
-} 
+}
 
 #debug(PlotMultipleEnrichmentPlots)
 PlotMultipleEnrichmentPlots<-function(filelist, plotcols=rep("Black", length(filelist)), stats=FALSE){
@@ -261,14 +260,14 @@ PlotMultipleEnrichmentPlots<-function(filelist, plotcols=rep("Black", length(fil
   lRES.global<-vector()
   lRES.global=rep(min(PlotData$lRES), length(filelist))
   for(i in 1:length(filelist)){
-    x[i]<--300 
+    x[i]<--300
     y[i]<-lRES.global[i]-((i-1)*.1)
   }
   for(i in 1:length(filelist)){
     YRUG<-rep(y[i], nrow(dflist[[i]]))
     dflist[[i]]<-cbind(dflist[[i]], YRUG, stringsAsFactors=FALSE)
   }
-  
+
   g<-ggplot() +
     geom_line(data=dflist[[1]], aes(x=LIST.LOC, y=RES), colour=plotcols[1])+
     geom_vline(data=PlotData[1,], aes(xintercept=dotted), colour=plotcols[1], linetype="dotted", size=0.8)+

@@ -4,7 +4,7 @@ Title: This Packages Makes the Analysis of Microarray Data More Efficient
 Version: 0.1
 Date: 2016-04-12
 Author: Scott Furlan
-Maintainer: scottfurlan@gmail.com
+Maintainer: Scott Furlan <sfurlan@uw.edu>
 Description: This project includes
 License: NA
 LazyData: TRUE
