@@ -17,4 +17,5 @@ Imports:
   stringr,
   limma,
   Vennerable,
-  plyr
+  plyr,
+  limma
