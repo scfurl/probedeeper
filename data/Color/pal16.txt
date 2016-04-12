@@ -1,0 +1,17 @@
+Number	R	G	B	Name	Group
+1	0	73	73	FGreen	FR104.D14
+2	0	146	146	LFGreen	FR104.F
+3	255	109	182	Pink	FR104.Siro.D14
+4	0	109	219	Blue	Siro.F
+5	109	182	255	LBlue	Bela.Siro.D30
+6	182	219	255	LLBlue	Bela.Siro.F
+7	73	0	146	Purple	Auto.D14
+8	182	109	255	LPurple	Auto.D36
+9	128	129	132	Grey	Healthy.Control
+10	0	0	0	Black	Bela.F
+11	255	182	216	LPink	FR104.Siro.F
+12	146	0	0	Red	NoRx.F
+13	36	255	36	Green	Bela.Siro.D14
+14	146	73	0	Brown	Tac.Mtx.D14
+15	219	209	0	Mustard	Tac.Mtx.D30
+16	255	255	109	Lemon	Tac.Mtx.F
