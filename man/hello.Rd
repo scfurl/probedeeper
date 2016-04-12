@@ -1,12 +1,9 @@
-\name{hello}
-\alias{hello}
-\title{Hello, World!}
+\name{probedeeper manual}
+\alias{aka how to do it}
+\title{Title1}
 \usage{
-hello()
 }
 \description{
-Prints 'Hello, world!'.
 }
 \examples{
-hello()
 }
