@@ -30,7 +30,7 @@ toIPA <-function(TT, fname="", write=TRUE){
   if(write==TRUE && fname !=""){write.table(tmp, fname, row.names=FALSE, quote=FALSE, sep="\t")}
   if(write==FALSE){return(tmp)}
   if(write==TRUE && fname ==""){stop("No Filename!")}
-  
+
 }
 
 fixrownames<-function(df, name)
@@ -68,14 +68,14 @@ limmaDE.output<-list()
 mydesign <- model.matrix(~0 + classvec.sel)
 colnames(mydesign) <- LETTERS[seq(from=1, to=length(levels(classvec.sel)))]
 names(colnames(mydesign))<-levels(classvec.sel)
-fit <- lmFit(data.sel, mydesign)
+fit <- limma::lmFit(data.sel, mydesign)
 mydesign<<-mydesign
 contrast.string<-contrast.eq(colnames(mydesign), element1=element1, element2=element2)
 contrast.matrix<-do.call(makeContrasts.SF, as.list(contrast.string))
 colnames(contrast.matrix)<-substring(contrast.string,1,2)
 genofits <- contrasts.fit(fit, contrast.matrix)
-geno_ebFit <<- eBayes(genofits)
-results<<-decideTests(geno_ebFit, method)
+geno_ebFit <<- limma::eBayes(genofits)
+results<<-limma::decideTests(geno_ebFit, method)
 contrast.list<-as.list(substring(contrast.string,1,2))
 names(contrast.list)<-as.list(substring(contrast.string,1,2))
 contrast.mat<-as.data.frame(mapply(append, contrast.list, substring(contrast.list,1,1)), stringsAsFactors=FALSE)
