@@ -58,7 +58,7 @@ contrast.eq<-function(vector, element1=seq(1,length(vector)), element2){
 }
 
 makeContrasts.SF<-function(...) {
-  makeContrasts(...,levels = mydesign)
+  limma::makeContrasts(...,levels = mydesign)
 }
 
 autoLIMMA<-function(data.sel, classvec.sel, element1, element2, pvalue.thresh=0.05, lfc.thresh=1, adjust.method="fdr", method="separate", printdata=FALSE){
@@ -73,7 +73,7 @@ mydesign<<-mydesign
 contrast.string<-contrast.eq(colnames(mydesign), element1=element1, element2=element2)
 contrast.matrix<-do.call(makeContrasts.SF, as.list(contrast.string))
 colnames(contrast.matrix)<-substring(contrast.string,1,2)
-genofits <- contrasts.fit(fit, contrast.matrix)
+genofits <- limma::contrasts.fit(fit, contrast.matrix)
 geno_ebFit <<- limma::eBayes(genofits)
 results<<-limma::decideTests(geno_ebFit, method)
 contrast.list<-as.list(substring(contrast.string,1,2))
@@ -88,10 +88,10 @@ limmaDE.output<-contrast.list
 tmp.list<-list()
 tmp.list2<-list()
 for(i in 1:length(contrast.list[[1]])){
-  tmp.list2[[i]]<-topTable(geno_ebFit,coef=as.character(limmaDE.output[[1]][i]),n=60000,adjust.method=adjust.method, sort.by="logFC", p.value=pvalue.thresh,lfc=lfc.thresh)
+  tmp.list2[[i]]<-limma::topTable(geno_ebFit,coef=as.character(limmaDE.output[[1]][i]),n=60000,adjust.method=adjust.method, sort.by="logFC", p.value=pvalue.thresh,lfc=lfc.thresh)
   names(tmp.list2)[i]<-paste(as.character(limmaDE.output[[1]][i]), "-", as.character(limmaDE.output[[2]][i]), sep="")
   #if(os=="Windows"){rownames(tmp.list2[[i]])<-tmp.list2[[i]]$ID}
-  tmp.list[[i]]<-topTable(geno_ebFit,coef=as.character(limmaDE.output[[1]][i]),n=60000,adjust.method=adjust.method, sort.by="logFC")
+  tmp.list[[i]]<-limma::topTable(geno_ebFit,coef=as.character(limmaDE.output[[1]][i]),n=60000,adjust.method=adjust.method, sort.by="logFC")
   names(tmp.list)[i]<-paste(as.character(limmaDE.output[[1]][i]), "-", as.character(limmaDE.output[[2]][i]), sep="")
   #if(os=="Windows"){rownames(tmp.list[[i]])<-tmp.list[[i]]$ID}
 }

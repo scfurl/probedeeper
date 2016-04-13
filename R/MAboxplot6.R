@@ -17,7 +17,7 @@
 # stat.test="pairwiset"
 # p.value=0.05
 #display.brewer.all(n=NULL, type="all", select=NULL, exact.n=TRUE, colorblindFriendly=FALSE)
-MAboxplot6<-function(gene, array, limma.obj, classvec,
+MAboxplot6<-function(gene, array, limma.obj=NULL, classvec,
                      line.cols=brewer.pal(length(levels(classvec)), "Spectral"),
                      dot.fill.cols=brewer.pal(length(levels(classvec)), "RdYlGn"),
                      box.fill.cols=brewer.pal(length(levels(classvec)), "RdYlBu"),
@@ -29,7 +29,6 @@ MAboxplot6<-function(gene, array, limma.obj, classvec,
                               dot.fill.cols<-dot.fill.cols[reorder]
                               box.fill.cols<-box.fill.cols[reorder]
   }
-
   obj<-array[gene,]
   df<-data.frame(gp=classvec, y=obj)
   maxh <- max(df$y)
@@ -38,7 +37,7 @@ MAboxplot6<-function(gene, array, limma.obj, classvec,
   maxh<-maxh+spread
   df$maxh<-maxh
   df$spread<-spread
-  ds <- ddply(df, .(gp), summarise, mean = mean(y), sd = sd(y))
+  ds <- plyr::ddply(df, plyr::as.quoted("gp"), plyr::summarise, mean = mean(y), sd = sd(y))
   if(stat.test=="pairwiset"){
     stats<-pairwise.t.test(df$y, classvec, p.adjust="fdr")
   }
@@ -84,30 +83,30 @@ MAboxplot6<-function(gene, array, limma.obj, classvec,
   #add sampleNames to df
   if(length(sampleNames)!=0){
     df$sampleNames<-sampleNames
-    g<-ggplot(df, aes(x = gp, y = y)) +
-      geom_boxplot(size=box.size, alpha=0.6, fill=box.fill.cols, colour=line.cols, outlier.size=NULL, width=0.6) +
-      geom_point(size=dot.size, shape=21, colour=line.cols[classvec], width=box.width, fill=dot.fill.cols[classvec], alpha=alpha, position = position_jitter(width = .1)) +
-      geom_text(data=df, aes(x = gp, y = y, label=sampleNames), size = 3, hjust=-1) +
-      labs(list(x = "Treatment Group", y = "Log2 Transformed Data", title=gene)) +
+    g<-ggplot2::ggplot(df, ggplot2::aes(x = gp, y = y)) +
+      ggplot2::geom_boxplot(size=box.size, alpha=0.6, fill=box.fill.cols, colour=line.cols, outlier.size=NULL, width=box.width) +
+      ggplot2::geom_point(size=dot.size, shape=21, colour=line.cols[classvec], width=box.width, fill=dot.fill.cols[classvec], alpha=alpha, position = ggplot2::position_jitter(width = .1)) +
+      ggplot2::geom_text(data=df, ggplot2::aes(x = gp, y = y, label=sampleNames), size = 3, hjust=-1) +
+      ggplot2::labs(list(x = "Treatment Group", y = "Log2 Transformed Data", title=gene)) +
       #ylab(expression(paste("Log", [2], " Transformed Data", sep="")))+
-      theme_bw() +
-      theme(axis.text=element_text(size=16),
-          axis.title.x=element_text(size=20, vjust=1),
-          axis.text.x = element_text(angle = 45, hjust=1),
-          axis.title.y=element_text(size=16, vjust=0.5), plot.title = element_text(vjust = 0, size=20),
-          axis.line = element_line(colour = "black"),
-          #text=element_text(family="Myriad Pro"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.border = element_blank(),
-          panel.background = element_blank())
+      ggplot2::theme_bw() +
+      ggplot2::theme(axis.text=ggplot2::element_text(size=16),
+          axis.title.x=ggplot2::element_text(size=20, vjust=1),
+          axis.text.x = ggplot2::element_text(angle = 45, hjust=1),
+          axis.title.y=ggplot2::element_text(size=16, vjust=0.5), plot.title = ggplot2::element_text(vjust = 0, size=20),
+          axis.line = ggpolt2::element_line(colour = "black"),
+          #text=ggplot2::element_text(family="Myriad Pro"),
+          panel.grid.major = ggpolt2::element_blank(),
+          panel.grid.minor = ggpolt2::element_blank(),
+          panel.border = ggpolt2::element_blank(),
+          panel.background = ggpolt2::element_blank())
     if(nrow(array.ind)==0){
       print(g)
     }
     else
     {
       for(i in 1:nrow(array.ind)){
-        g<-g+geom_segment(aes_string(x = array.ind$start[i], y = array.ind$y[i], xend = array.ind$end[i], yend=array.ind$y[i]), lwd=0.5,arrow = arrow(angle=90, ends="both", length = unit(0.1, "cm")))
+        g<-g+ggplot2::geom_segment(ggplot2::aes_string(x = array.ind$start[i], y = array.ind$y[i], xend = array.ind$end[i], yend=array.ind$y[i]), lwd=0.5,arrow = arrow(angle=90, ends="both", length = grid::unit(0.1, "cm")))
       }
     }
     print(g)
@@ -117,29 +116,29 @@ MAboxplot6<-function(gene, array, limma.obj, classvec,
   }
   else
   {
-      g<-ggplot(df, aes(x = gp, y = y)) +
-        geom_boxplot(size=box.size, alpha=0.6, fill=box.fill.cols, width=box.width, colour=line.cols, outlier.size=NULL, width=0.6) +
-        geom_point(size=dot.size, shape=21, colour=line.cols[classvec], fill=dot.fill.cols[classvec], alpha=alpha, position = position_jitter(width = .1)) +
-        labs(list(x = "Treatment Group", y = "Log2 Transformed Data", title=gene)) +
+      g<-ggplot2::ggplot(df, ggplot2::aes(x = gp, y = y)) +
+        ggplot2::geom_boxplot(size=box.size, alpha=0.6, fill=box.fill.cols, width=box.width, colour=line.cols, outlier.size=NULL) +
+        ggplot2::geom_point(size=dot.size, shape=21, colour=line.cols[classvec], fill=dot.fill.cols[classvec], alpha=alpha, position = ggplot2::position_jitter(width = .1)) +
+        ggplot2::labs(list(x = "Treatment Group", y = "Log2 Transformed Data", title=gene)) +
         #ylab(expression(paste("Log", [2], " Transformed Data", sep="")))+
-        theme_bw() +
-        theme(axis.text=element_text(size=16),
-              axis.title.x=element_text(size=20, vjust=1),
-              axis.text.x = element_text(angle = 45, hjust=1),
-              axis.title.y=element_text(size=16, vjust=0.5), plot.title = element_text(vjust = 0, size=20),
-              axis.line = element_line(colour = "black"),
-              #text=element_text(family="Myriad Pro"),
-              panel.grid.major = element_blank(),
-              panel.grid.minor = element_blank(),
-              panel.border = element_blank(),
-              panel.background = element_blank())
+        ggplot2::theme_bw() +
+        ggplot2::theme(axis.text=ggplot2::element_text(size=16),
+              axis.title.x=ggplot2::element_text(size=20, vjust=1),
+              axis.text.x = ggplot2::element_text(angle = 45, hjust=1),
+              axis.title.y=ggplot2::element_text(size=16, vjust=0.5), plot.title = ggplot2::element_text(vjust = 0, size=20),
+              axis.line = ggplot2::element_line(colour = "black"),
+              #text=ggplot2::element_text(family="Myriad Pro"),
+              panel.grid.major = ggplot2::element_blank(),
+              panel.grid.minor = ggplot2::element_blank(),
+              panel.border = ggplot2::element_blank(),
+              panel.background = ggplot2::element_blank())
       if(nrow(array.ind)==0){
         print(g)
       }
       else
       {
         for(i in 1:nrow(array.ind)){
-          g<-g+geom_segment(aes_string(x = array.ind$start[i], y = array.ind$y[i], xend = array.ind$end[i], yend=array.ind$y[i]), lwd=0.5,arrow = arrow(angle=90, ends="both", length = unit(0.1, "cm")))
+          g<-g+ggplot2::geom_segment(ggplot2::aes_string(x = array.ind$start[i], y = array.ind$y[i], xend = array.ind$end[i], yend=array.ind$y[i]), lwd=0.5,arrow = ggplot2::arrow(angle=90, ends="both", length = grid::unit(0.1, "cm")))
         }
       }
       print(g)
@@ -154,13 +153,13 @@ makeFootnote <- function(footnoteText =
                            format(Sys.time(), "%d %b %Y"),
                          size = .7, color = grey(.5))
 {
-  pushViewport(viewport())
-  grid.text(label = footnoteText ,
-            x = unit(1,"npc") - unit(2, "mm"),
-            y = unit(2, "mm"),
+  grid::pushViewport(grid::viewport())
+  grid::grid.text(label = footnoteText ,
+            x = grid::unit(1,"npc") - grid::unit(2, "mm"),
+            y = grid::unit(2, "mm"),
             just = c("right", "bottom"),
-            gp = gpar(cex = size, col = color))
-  popViewport()
+            gp = grid::gpar(cex = size, col = color))
+  grid::popViewport()
 }
 
 extractColor<-function(classvec.sel, cols.list, show="fill"){
