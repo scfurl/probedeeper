@@ -1,37 +1,4 @@
 #LIMMA SUPPORT
-#Functions Up.Down.Limma
-#THIS FUNCTION DETERMINES THE DIRECTION FOLD CHANGE FOR ANY GIVEN GENE LIST (GL) IN ANY GIVEN TOPTABLE FROM
-#LIMMA (TT)
-
-Up.Down.Limma<-function(GL, TT, name){
-  #TT.colnames<-c("logFC","AveExpr","t","P.Value","adj.P.Val","B")
-  #if(class(GL)!="character"){stop("Gene List is not a character vector")}
-  #if(class(TT)!="data.frame"){stop("Top Table is not in the correct form")}
-  #if(all(colnames(TT)==TT.colnames)==FALSE){stop("Top Table is not in the correct form")}
-  tmp<-TT[GL,]
-  neg<-nrow(tmp[tmp$logFC<0,])
-  pos<-nrow(tmp[tmp$logFC>0,])
-  return(data.frame(Name=name, TopTable=deparse(substitute(TT)), positive=pos, negative=neg, total=pos+neg))}
-
-lmp <- function (modelobject) {
-  if (class(modelobject) != "lm") stop("Not an object of class 'lm' ")
-  f <- summary(modelobject)$fstatistic
-  p <- pf(f[1],f[2],f[3],lower.tail=F)
-  attributes(p) <- NULL
-  return(p)
-}
-
-toIPA <-function(TT, fname="", write=TRUE){
-  TT.colnames<-c("logFC","AveExpr","t","P.Value","adj.P.Val","B")
-  if(all(colnames(TT)==TT.colnames)==FALSE){stop("Top Table is not in the correct form")}
-  TT$ID<-rownames(TT)
-  tmp<-(cbind(TT$ID, TT$logFC, TT$adj.P.Val))
-  colnames(tmp)<-c("ID", "LogRatio", "FDR")
-  if(write==TRUE && fname !=""){write.table(tmp, fname, row.names=FALSE, quote=FALSE, sep="\t")}
-  if(write==FALSE){return(tmp)}
-  if(write==TRUE && fname ==""){stop("No Filename!")}
-
-}
 
 fixrownames<-function(df, name)
 {
@@ -40,9 +7,6 @@ fixrownames<-function(df, name)
   colnames(output)<-c(name,colnames(df))
   return(output)
 }
-
-topDiffGenes<-function(allScore)
-{return(allScore < 0.05)}
 
 
 contrast.eq<-function(vector, element1=seq(1,length(vector)), element2){
@@ -143,26 +107,4 @@ SFVenn<-function(limma.out, index.sel, colors=gcolor, classvec.sel=classvec.sel,
     print(paste(names(VList[i]), length(VList[[i]]), sep="-"))
   }
   return(Vstem)
-  }
-
-ExtractLIMMA<-function(object, gene){
-  rownamesdf<-as.character(apply(object[[2]],1, as.character))
-  sigLevel<-vector()
-  logFC<-vector()
-  PVal<-vector()
-  for(i in 1:length(object[[4]])){
-    logFC[i]<-object[[4]][[i]][gene,]$logFC
-    PVal[i]<-object[[4]][[i]][gene,]$adj.P.Val
-    sigLevel[i]<-SigLevel(PVal[i])
-  }
-  df<-data.frame(logFC=logFC, adj.P.Val=PVal, sigLevel=sigLevel, row.names=rownamesdf)
-  return(df)
-}
-
-SigLevel<-function(vector){
-  return(sapply(vector, function(x) ifelse(x>0.001 && x<0.05, "*", ifelse(x<0.001, "**", "NS"))))
-}
-
-FindContrasts<-function(object){
-  return(print(names(object[[3]])))
   }
