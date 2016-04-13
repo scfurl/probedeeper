@@ -18,9 +18,9 @@
 # p.value=0.05
 #display.brewer.all(n=NULL, type="all", select=NULL, exact.n=TRUE, colorblindFriendly=FALSE)
 MAboxplot6<-function(gene, array, limma.obj=NULL, classvec,
-                     line.cols=brewer.pal(length(levels(classvec)), "Spectral"),
-                     dot.fill.cols=brewer.pal(length(levels(classvec)), "RdYlGn"),
-                     box.fill.cols=brewer.pal(length(levels(classvec)), "RdYlBu"),
+                     line.cols=RColorBrewer::brewer.pal(length(levels(classvec)), "Spectral"),
+                     dot.fill.cols=RColorBrewer::brewer.pal(length(levels(classvec)), "RdYlGn"),
+                     box.fill.cols=RColorBrewer::brewer.pal(length(levels(classvec)), "RdYlBu"),
                      alpha=0.8, dot.size=6, box.size=0.5, box.width=1,
                      reorder=NULL, stat.test="limma", annotate=TRUE, p.value=0.05, sampleNames=NULL){
   classvec<-as.factor(classvec)
@@ -87,7 +87,7 @@ MAboxplot6<-function(gene, array, limma.obj=NULL, classvec,
       ggplot2::geom_boxplot(size=box.size, alpha=0.6, fill=box.fill.cols, colour=line.cols, outlier.size=NULL, width=box.width) +
       ggplot2::geom_point(size=dot.size, shape=21, colour=line.cols[classvec], width=box.width, fill=dot.fill.cols[classvec], alpha=alpha, position = ggplot2::position_jitter(width = .1)) +
       ggplot2::geom_text(data=df, ggplot2::aes(x = gp, y = y, label=sampleNames), size = 3, hjust=-1) +
-      ggplot2::labs(list(x = "Treatment Group", y = "Log2 Transformed Data", title=gene)) +
+      ggplot2::labs(list(x = NULL, y = "Log2 Transformed Data", title=gene)) +
       #ylab(expression(paste("Log", [2], " Transformed Data", sep="")))+
       ggplot2::theme_bw() +
       ggplot2::theme(axis.text=ggplot2::element_text(size=16),
@@ -119,7 +119,7 @@ MAboxplot6<-function(gene, array, limma.obj=NULL, classvec,
       g<-ggplot2::ggplot(df, ggplot2::aes(x = gp, y = y)) +
         ggplot2::geom_boxplot(size=box.size, alpha=0.6, fill=box.fill.cols, width=box.width, colour=line.cols, outlier.size=NULL) +
         ggplot2::geom_point(size=dot.size, shape=21, colour=line.cols[classvec], fill=dot.fill.cols[classvec], alpha=alpha, position = ggplot2::position_jitter(width = .1)) +
-        ggplot2::labs(list(x = "Treatment Group", y = "Log2 Transformed Data", title=gene)) +
+        ggplot2::labs(list(x = NULL, y = "Log2 Transformed Data", title=gene)) +
         #ylab(expression(paste("Log", [2], " Transformed Data", sep="")))+
         ggplot2::theme_bw() +
         ggplot2::theme(axis.text=ggplot2::element_text(size=16),
@@ -173,4 +173,12 @@ extractColor<-function(classvec.sel, cols.list, show="fill"){
   else
   {pie(rep(1,nrow(colmatch.ord)), col=colmatch.ord$line, labels=colmatch.ord$names)}
   return(colmatch)
+}
+
+SigLevel<-function(vector){
+  return(sapply(vector, function(x) ifelse(x>0.001 && x<0.05, "*", ifelse(x<0.001, "**", "NS"))))
+}
+
+FindContrasts<-function(object){
+  return(print(names(object[[3]])))
 }

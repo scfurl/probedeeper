@@ -108,3 +108,18 @@ SFVenn<-function(limma.out, index.sel, colors=gcolor, classvec.sel=classvec.sel,
   }
   return(Vstem)
   }
+
+
+ExtractLIMMA<-function(object, gene){
+  rownamesdf<-as.character(apply(object[[2]],1, as.character))
+  sigLevel<-vector()
+  logFC<-vector()
+  PVal<-vector()
+  for(i in 1:length(object[[4]])){
+    logFC[i]<-object[[4]][[i]][gene,]$logFC
+    PVal[i]<-object[[4]][[i]][gene,]$adj.P.Val
+    sigLevel[i]<-SigLevel(PVal[i])
+  }
+  df<-data.frame(logFC=logFC, adj.P.Val=PVal, sigLevel=sigLevel, row.names=rownamesdf)
+  return(df)
+}
