@@ -17,11 +17,13 @@
 # stat.test="pairwiset"
 # p.value=0.05
 #display.brewer.all(n=NULL, type="all", select=NULL, exact.n=TRUE, colorblindFriendly=FALSE)
-setClass("ColPal", representation(pal="character"))
-new("ColPal", )
+
+
+# setClass("ColPal", representation(pal="character"))
+# new("ColPal", )
 
 CreateColObj<-function(n, factor=40, times = (1 + ceiling((start+n)/17)), pie=TRUE, start=1,
-                         pal<-rep(c(RColorBrewer::brewer.pal(9, "Set1"),  RColorBrewer::brewer.pal(8, "Set2")),times))
+                         pal=rep(c(RColorBrewer::brewer.pal(9, "Set1"),  RColorBrewer::brewer.pal(8, "Set2")),times))
   {
   #pal<-rep(c(RColorBrewer::brewer.pal(9, "Set1"), "#000000", RColorBrewer::brewer.pal(8, "Set2")),times)
 
