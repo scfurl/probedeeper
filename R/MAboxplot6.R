@@ -57,9 +57,9 @@ LightenDarkenColor<-function(col, amt) {
 
 
 MAboxplot6<-function(gene, array, limma.obj=NULL, classvec,
-                     line.cols=GraphColors(length(levels(classvec)))$line,
+                     line.cols=CreateColObj(length(levels(classvec)))$line,
                      dot.fill.cols=rep("white", length(levels(classvec))),
-                     box.fill.cols=GraphColors(length(levels(classvec)))$fill,
+                     box.fill.cols=CreateColObj(length(levels(classvec)))$fill,
                      alpha=0.8, dot.size=6, box.size=1, box.width=1,
                      reorder=NULL, stat.test="pairwiset", annotate=TRUE, p.value=0.05, sampleNames=NULL){
   classvec<-as.factor(classvec)

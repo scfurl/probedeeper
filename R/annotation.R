@@ -8,7 +8,7 @@
 
 
 annotateProbes<-function(vec, file=NULL, filetype="csv"){
-  if(file == NULL) { break("No File input") }
+  if(length(file) == 0) { break("No File input") }
   if(class(vec) != "character") { break("Not correct input") }
   if(filetype == "csv") { input<-read.csv(file) }
   if(filetype == "soft") { input<-read.csv(file) }
