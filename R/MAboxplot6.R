@@ -25,21 +25,14 @@
 CreateColObj<-function(n, factor=40, times = (1 + ceiling((start+n)/17)), pie=TRUE, start=1,
                          pal=rep(c(RColorBrewer::brewer.pal(9, "Set1"),  RColorBrewer::brewer.pal(8, "Set2")),times))
   {
-  #pal<-rep(c(RColorBrewer::brewer.pal(9, "Set1"), "#000000", RColorBrewer::brewer.pal(8, "Set2")),times)
-
-#   col<-rgb2hsv(col2rgb(pal))
-#   change<-col[3,]*factor
-#   col2<-col
-#   col2[3,]<-replace(change, change>1, 1)
-#   pie(rep(1,ncol(col)), col=pal)
-#   pie(rep(1,ncol(col)), col=hsv(col2[1,], col2[2,], col2[3,]))
   col2<-as.character(sapply(pal, function(x) LightenDarkenColor(x, factor)))
   col3<-as.character(sapply(pal, function(x) LightenDarkenColor(x, factor)))
    if(pie==TRUE){
       par(mfrow=c(1,3))
       pie(rep(1,length(pal[start:(start+n)])), col=pal[start:(start+n)], labels=pal[start:(start+n)])
-      pie(rep(1,length(pal[start:(start+n)])), col=col2[start:(start+n)], labels=col2[start:(start+n)])}
-      pie(rep(1,length(pal[start:(start+n)])), col=col3[start:(start+n)], labels=col3[start:(start+n)])}
+      pie(rep(1,length(pal[start:(start+n)])), col=col2[start:(start+n)], labels=col2[start:(start+n)])
+      pie(rep(1,length(pal[start:(start+n)])), col=col3[start:(start+n)], labels=col3[start:(start+n)])
+   }
   return(list(line=pal[start:(start+n)], fill=col2[start:(start+n)]))
 }
 
