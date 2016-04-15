@@ -22,18 +22,19 @@
 # setClass("ColPal", representation(pal="character"))
 # new("ColPal", )
 
-CreateColObj<-function(n, factor=40, times = (1 + ceiling((start+n)/17)), pie=TRUE, start=1,
+CreateColObj<-function(n, factor=60, times = (1 + ceiling((start+(n-1))/17)), pie=TRUE, start=1,
                          pal=rep(c(RColorBrewer::brewer.pal(9, "Set1"),  RColorBrewer::brewer.pal(8, "Set2")),times))
   {
+  sel<-end<-start:(start+(n-1))
   col2<-as.character(sapply(pal, function(x) LightenDarkenColor(x, factor)))
-  col3<-as.character(sapply(pal, function(x) LightenDarkenColor(x, factor)))
+  col3<-as.character(sapply(col2, function(x) LightenDarkenColor(x, factor+100)))
    if(pie==TRUE){
       par(mfrow=c(1,3))
-      pie(rep(1,length(pal[start:(start+n)])), col=pal[start:(start+n)], labels=pal[start:(start+n)])
-      pie(rep(1,length(pal[start:(start+n)])), col=col2[start:(start+n)], labels=col2[start:(start+n)])
-      pie(rep(1,length(pal[start:(start+n)])), col=col3[start:(start+n)], labels=col3[start:(start+n)])
+      pie(rep(1,length(pal[sel])), col=pal[sel], labels=pal[sel])
+      pie(rep(1,length(pal[sel])), col=col2[sel], labels=col2[sel])
+      pie(rep(1,length(pal[sel])), col=col3[sel], labels=col3[sel])
    }
-  return(list(line=pal[start:(start+n)], fill=col2[start:(start+n)]))
+  return(list(line=pal[sel], fill=col2[sel], dot=col3[sel]))
 }
 
 LightenDarkenColor<-function(col, amt) {
@@ -54,12 +55,12 @@ LightenDarkenColor<-function(col, amt) {
   ret<-substr(inter, nchar(inter)-5, nchar(inter))
   return(toupper(paste("#", ret, sep="")))
 }
-
+#debug(MAboxplot6)
 
 MAboxplot6<-function(gene, array, limma.obj=NULL, classvec,
-                     line.cols=CreateColObj(length(levels(classvec)))$line,
-                     dot.fill.cols=rep("white", length(levels(classvec))),
-                     box.fill.cols=CreateColObj(length(levels(classvec)))$fill,
+                     line.cols=CreateColObj(length(levels(classvec)), pie=FALSE)$line,
+                     dot.fill.cols=CreateColObj(n=length(levels(classvec)), pie=FALSE)$dot,
+                     box.fill.cols=CreateColObj(n=length(levels(classvec)), pie=FALSE)$fill,
                      alpha=0.8, dot.size=6, box.size=1, box.width=1,
                      reorder=NULL, stat.test="pairwiset", annotate=TRUE, p.value=0.05, sampleNames=NULL){
   classvec<-as.factor(classvec)
