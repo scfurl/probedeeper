@@ -74,7 +74,7 @@ return(limmaDE.output)
 }
 
 
-SFVenn<-function(limma.out, index.sel, colors=gcolor, classvec.sel=classvec.sel, plottype = "ChowRuskey"){
+SFVenn<-function(limma.out, index.sel, colors=RColorBrewer::brewer.pal(12, "Paired"), classvec.sel=classvec.sel, plottype = "ChowRuskey"){
   #This function takes output from autoLimma and makes Venn diagrams of the various contrasts
   #limma.out= output from autoLIMMA
   #index.sel= vector of indices to plot Venn
@@ -89,9 +89,9 @@ SFVenn<-function(limma.out, index.sel, colors=gcolor, classvec.sel=classvec.sel,
   gp <- VennThemes(Tstem, colourAlgorithm = "sequential", increasingLineWidth=FALSE)
   gps <- gp[["Set"]]
   nSets <- length(gps)
-  venncolors<-gcolor[which(LETTERS[seq(from=1, to=length(gcolor))] %in% substr(names(limma.out[[3]]),1,1)[index.sel])]
+  venncolors<-colors[which(LETTERS[seq(from=1, to=length(colors))] %in% substr(names(limma.out[[3]]),1,1)[index.sel])]
   if(length(venncolors)<nSets){
-    venncolors<-c(venncolors, brewer.pal(12, "Paired")[1:(nSets-length(venncolors))])
+    venncolors<-c(venncolors, RColorBrewer::brewer.pal(12, "Paired")[1:(nSets-length(venncolors))])
   }
   make.unique(venncolors)
   for (ix in 1:nSets) {
