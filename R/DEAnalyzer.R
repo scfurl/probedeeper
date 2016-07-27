@@ -291,7 +291,7 @@ return(toprint)
 }
 
 autoDAVID<-function(vector, input="symbol"){
-  if(symbol %in% c("symbol", "ENS")){break("Input Not Correct")}
+  if(!input %in% c("symbol", "ENS")){stop("Input Not Correct")}
   library(org.Hs.eg.db)
   david<-RDAVIDWebService::DAVIDWebService(email="sfurlan@uw.edu", url="https://david.ncifcrf.gov/webservice/services/DAVIDWebService.DAVIDWebServiceHttpSoap12Endpoint/")
   if(input=="symbol"){
@@ -305,19 +305,28 @@ autoDAVID<-function(vector, input="symbol"){
     }
   }
   if(input=="ENS"){
-    e2s <- toTable(org.Hs.egENSEMBLTRANS)
-    result<-addList(david, e2s$gene_id[e2s$trans_id %in% vector],
+    e2s <- toTable(org.Hs.egENSEMBL)
+    result<-addList(david, e2s$gene_id[e2s$ensembl_id %in% vector],
                     idType="ENTREZ_GENE_ID",
                     listName="autoDavid", listType="Gene")
-    found<-length(which(e2s$trans_id %in% vector))
+    found<-length(which(e2s$ensembl_id %in% vector))
     print(paste("Found ", found, " Annotated Genes of ", length(vector), " Submitted", sep=""))
   }
     setAnnotationCategories(david, c("PANTHER_PATHWAY","BIOCARTA", "REACTOME_PATHWAY","KEGG_PATHWAY"))
     Table<-getFunctionalAnnotationChart(david)
     df<-data.frame(Table@.Data, stringsAsFactors=FALSE)
     colnames(df)<-(Table@names)
-    if(symbol=="symbol"){
+    if(input=="ENS"){
     if(length(df$Genes)>0)
+      {
+      e2s2 = toTable(org.Hs.egSYMBOL)
+        for(j in 1:length(df$Genes)){
+          df$Genes[j]<-paste(e2s2$symbol[e2s2$gene_id %in% unlist(strsplit(df$Genes[j], ", "))], collapse=", ")
+        }
+      }
+    }
+    if(input=="symbol"){
+      if(length(df$Genes)>0)
       {
         for(j in 1:length(df$Genes)){
           df$Genes[j]<-paste(e2s$symbol[e2s$gene_id %in% unlist(strsplit(df$Genes[j], ", "))], collapse=", ")
