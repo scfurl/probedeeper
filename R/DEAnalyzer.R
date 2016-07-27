@@ -30,7 +30,7 @@ autoLIMMA2DEAnalyzer<-function(limmalist, index.sel){
   new("DEAnalyzerInput", InputGeneSet=InputGeneLists,
       DEData=limmalist[[4]][index.sel])
 }
-  
+
 
 Input2DEAnalyzer<-function(InputGeneLists, DEData){
   new("DEAnalyzerInput", InputGeneSet=InputGeneLists,
@@ -42,7 +42,7 @@ CalcDEAnalyzer<-function(object, GOopt=TRUE, PWopt=TRUE){
   calc.object<-new("DEAnalyzerCalcs")
   calc.object@InputGeneSet<-object@InputGeneSet
   calc.object@DEData<-object@DEData
-  calc.object@ObjectInfo<-list(NumberGeneSets<-length(object@InputGeneSet), 
+  calc.object@ObjectInfo<-list(NumberGeneSets<-length(object@InputGeneSet),
                                 ContainsGOData=GOopt, ContainsPWData=PWopt)
   for(i in 1:length(object@InputGeneSet)){
     FC<-object@DEData[[i]]$logFC[rownames(object@DEData[[i]]) %in% object@InputGeneSet[[i]]]
@@ -57,10 +57,10 @@ CalcDEAnalyzer<-function(object, GOopt=TRUE, PWopt=TRUE){
   UpDnCV[calc.object@FoldChange[[i]]<0]<-"Dn"
   calc.object@UpDnClassvec[[i]]<-as.factor(UpDnCV)
   Updf<-data.frame(Symbol=as.character(names(calc.object@FoldChange[[i]])[calc.object@FoldChange[[i]]>0]),
-                   logFC=calc.object@FoldChange[[i]][calc.object@FoldChange[[i]]>0], 
+                   logFC=calc.object@FoldChange[[i]][calc.object@FoldChange[[i]]>0],
                    Pvalue=calc.object@Pvalues[[i]][calc.object@FoldChange[[i]]>0], stringsAsFactors=FALSE)
   Dndf<-data.frame(Symbol=names(calc.object@FoldChange[[i]])[calc.object@FoldChange[[i]]<0],
-                   logFC=calc.object@FoldChange[[i]][calc.object@FoldChange[[i]]<0], 
+                   logFC=calc.object@FoldChange[[i]][calc.object@FoldChange[[i]]<0],
                    Pvalue=calc.object@Pvalues[[i]][calc.object@FoldChange[[i]]<0], stringsAsFactors=FALSE)
   colnames(Updf)<-c("Symbol", "logFC", "adj.P.Val")
   colnames(Dndf)<-c("Symbol", "logFC", "adj.P.Val")
@@ -86,7 +86,7 @@ CalcDEAnalyzer<-function(object, GOopt=TRUE, PWopt=TRUE){
     allGenes.Dn<-rep(0,length=nrow(calc.object@DEData[[i]]))
     allGenes.Dn[rownames(calc.object@DEData[[i]]) %in% names(calc.object@Pvalues[[i]][calc.object@UpDnClassvec[[i]]=="Dn"])]<-1
     allGenes.Dn[!(rownames(calc.object@DEData[[i]]) %in% names(calc.object@Pvalues[[i]][calc.object@UpDnClassvec[[i]]=="Dn"]))]<-0
-    names(allGenes.Dn)<-rownames(calc.object@DEData[[i]])                               
+    names(allGenes.Dn)<-rownames(calc.object@DEData[[i]])
     calc.object@GO.BP.UP[[i]]<-runGO(allGenes=allGenes.Up, ont="BP")
     calc.object@GO.BP.DN[[i]]<-runGO(allGenes=allGenes.Dn, ont="BP")
     calc.object@GO.MF.UP[[i]]<-runGO(allGenes=allGenes.Up, ont="MF")
@@ -118,7 +118,7 @@ runGO<-function(allGenes, ont){
                 description = "NoRxvHC", ontology = ont,
                 allGenes = allGenes, geneSel = includeGenes,
                 annot = annFUN.org, mapping="org.Hs.eg.db", ID="symbol")
-  
+
   #resultFisher <- runTest(GOdata, algorithm = "classic", statistic = "fisher")
   #resultKS <- runTest(GOdata, algorithm = "classic", statistic = "ks")
   resultKS.elim <- runTest(GOdata, algorithm = "elim", statistic = "ks")
@@ -230,13 +230,13 @@ writeDEAnalyzer<-function(object, directory="", cellStyle="", IPAopt=TRUE){
   }
   wb<-list()
   for(j in 1:length(files)){
-    wb[[j]]<-loadWorkbook(filename=paste(location, filename, files[j], sep=""), create=TRUE)  
+    wb[[j]]<-loadWorkbook(filename=paste(location, filename, files[j], sep=""), create=TRUE)
   }
-  for(i in 1:length(object@InputGeneSet)){  
+  for(i in 1:length(object@InputGeneSet)){
     dflist<-list(Genesup.df<-object@Up[[i]],
          Genesdn.df<-object@Down[[i]], Genesall.df<-rbind(object@Up[[i]], object@Down[[i]]))
         if(object@ObjectInfo$ContainsGOData==TRUE){
-          dflist<-c(dflist, 
+          dflist<-c(dflist,
                     list(dflistGOup.df<-object@GO.BP.UP[[i]]), list(GOdn.df<-object@GO.BP.DN[[i]]),
                     list(dflistGOup.df<-object@GO.MF.UP[[i]]), list(GOdn.df<-object@GO.MF.DN[[i]]))
         }
@@ -250,7 +250,7 @@ writeDEAnalyzer<-function(object, directory="", cellStyle="", IPAopt=TRUE){
     }
     for(j in 1:length(files)){
       createSheet(wb[[j]], name = names(object@InputGeneSet)[i])
-      writeWorksheet(wb[[j]], dflist[[j]], sheet=names(object@InputGeneSet)[i])  
+      writeWorksheet(wb[[j]], dflist[[j]], sheet=names(object@InputGeneSet)[i])
 #       if(class(cellstyle)!="character"){
 #       createCellStyle(wb[[j]], "GeneData")
 #       setCellStyle(wb[[j]], sheet =names(object@InputGeneSet)[i], row =1 , col =1 , cellstyle =cellStyle)
@@ -262,11 +262,11 @@ writeDEAnalyzer<-function(object, directory="", cellStyle="", IPAopt=TRUE){
 
 quickXL<-function(filename=paste(format(Sys.Date(), format="%Y_%m_%d_"), format(Sys.time(), format="%H_%M"), ".xls", sep=""), obj, sheetname="1"){
   if(class(obj)!="data.frame"){stop("Only data frames supported")}
-     wb<-loadWorkbook(filename=filename, create=TRUE) 
+     wb<-loadWorkbook(filename=filename, create=TRUE)
     createSheet(wb, name = sheetname)
   obj2<-cbind(rownames(obj),obj)
   colnames(obj2)<-c("Symbol", colnames(obj))
-      writeWorksheet(wb, obj2, sheet=sheetname)  
+      writeWorksheet(wb, obj2, sheet=sheetname)
      saveWorkbook(wb)
 }
 
@@ -274,7 +274,7 @@ quickXL<-function(filename=paste(format(Sys.Date(), format="%Y_%m_%d_"), format(
 quickXL.list<-function(filename=NULL, obj, header=FALSE){
   if(class(obj)!="list"){stop("Only lists supported")}
   if(is.null(filename)){stop("Invalid filename")}
-  wb<-loadWorkbook(filename=filename, create=TRUE) 
+  wb<-loadWorkbook(filename=filename, create=TRUE)
   for(i in names(obj)){
   createSheet(wb, name=i)
   dat<-obj[[i]]
@@ -283,32 +283,48 @@ quickXL.list<-function(filename=NULL, obj, header=FALSE){
   saveWorkbook(wb)
 }
 
-                  
+
 
 readautoLIMMA<-function(limmalist){
 toprint<-paste(1:length(as.character(limmalist[[2]][1,])), as.character(limmalist[[2]][1,]), sep="-")
 return(toprint)
 }
 
-autoDAVID<-function(vector){
-  david<-DAVIDWebService(email="sfurlan@uw.edu", url="https://david.ncifcrf.gov/webservice/services/DAVIDWebService.DAVIDWebServiceHttpSoap12Endpoint/")
+autoDAVID<-function(vector, input="symbol"){
+  if(symbol %in% c("symbol", "ENS")){break("Input Not Correct")}
+  library(org.Hs.eg.db)
+  david<-RDAVIDWebService::DAVIDWebService(email="sfurlan@uw.edu", url="https://david.ncifcrf.gov/webservice/services/DAVIDWebService.DAVIDWebServiceHttpSoap12Endpoint/")
+  if(input=="symbol"){
   for(i in 1:length(vector)){
     e2s = toTable(org.Hs.egSYMBOL)
     result<-addList(david, e2s$gene_id[e2s$symbol %in% vector],
                     idType="ENTREZ_GENE_ID",
                     listName="autoDavid", listType="Gene")
+    found<-length(which(e2s$gene_id %in% vector))
+    print(paste("Found ", found, " Annotated Genes of ", length(vector), " Submitted", sep=""))
+    }
+  }
+  if(input=="ENS"){
+    e2s <- toTable(org.Hs.egENSEMBLTRANS)
+    result<-addList(david, e2s$gene_id[e2s$trans_id %in% vector],
+                    idType="ENTREZ_GENE_ID",
+                    listName="autoDavid", listType="Gene")
+    found<-length(which(e2s$trans_id %in% vector))
+    print(paste("Found ", found, " Annotated Genes of ", length(vector), " Submitted", sep=""))
+  }
     setAnnotationCategories(david, c("PANTHER_PATHWAY","BIOCARTA", "REACTOME_PATHWAY","KEGG_PATHWAY"))
     Table<-getFunctionalAnnotationChart(david)
     df<-data.frame(Table@.Data, stringsAsFactors=FALSE)
     colnames(df)<-(Table@names)
+    if(symbol=="symbol"){
     if(length(df$Genes)>0)
       {
         for(j in 1:length(df$Genes)){
           df$Genes[j]<-paste(e2s$symbol[e2s$gene_id %in% unlist(strsplit(df$Genes[j], ", "))], collapse=", ")
         }
       }
+    }
   return(df)
-  }
 }
 
 GroupSelection<-function(classvec, SelectionIndex, data, alldata, cols, method="separate"){
@@ -369,7 +385,7 @@ GroupSelectionLocal<-function(suff=".new", classvec, SelectionIndex, data, allda
   selected<-levels(classvec)[SelectionIndex]
   data.sel<-data[,classvec %in% selected]
   classvec.sel<-as.factor(as.character(classvec[classvec %in% selected]))
-  alldata.sel<-alldata[,classvec %in% selected] 
+  alldata.sel<-alldata[,classvec %in% selected]
   assign(paste("selected", suff, sep=""), selected, envir=.GlobalEnv)
    assign(paste("data.sel", suff, sep=""), data.sel, envir=.GlobalEnv)
    assign(paste("classvec.sel", suff, sep=""), classvec.sel, envir=.GlobalEnv)
