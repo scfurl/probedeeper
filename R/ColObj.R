@@ -13,10 +13,10 @@ setClass("ColObj", slots=c(
 
 ColObjInit<-function(ColObj, LD=80){
   if(class(ColObj)!="ColObj"){stop("Input is not a ColObj class")}
-  selected<-levels(classvec)
+  selected<-levels(ColObj@classvec)
   colmatch<-paste("#", ColObj@assign$Color[match(selected,ColObj@assign$Group)], sep="")
   names(colmatch)<-ColObj@assign$Group[match(selected,ColObj@assign$Group)]
-  ColObj@full$line<-colmatch[match(classvec, names(colmatch))]
+  ColObj@full$line<-colmatch[match(ColObj@classvec, names(colmatch))]
   ColObj@full$fill<-sapply(ColObj@full$line, LightenDarkenColor, LD)
   ColObj@match$line<-colmatch
   ColObj@match$fill<-sapply(colmatch, LightenDarkenColor, LD)
