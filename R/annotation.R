@@ -38,7 +38,7 @@ masterannotate<-function(obj1, gene.multiples=FALSE, delete.NA=TRUE, method="max
   obj1.an<-as.data.frame(obj1, stringsAsFactors=FALSE)
   obj1.an$Symbol<-ags$Symbol
   obj2.an<-obj1.an[complete.cases(obj1.an),]
-  obj2.pr<-obj1.an[isNA(obj1.an$Symbol==TRUE),]
+  obj2.pr<-obj1.an[is.na(obj1.an$Symbol==TRUE),]
   ###For no selection and all data preserved###
   if(delete.NA==FALSE && gene.multiples ==TRUE){
     rownames(obj2.an)<-make.unique(obj2.an$Symbol, sep = "#")
@@ -82,7 +82,7 @@ annotatePerFile<-function(obj1, file=NULL, gene.multiples=FALSE, delete.NA=TRUE,
   obj1.an<-as.data.frame(obj1, stringsAsFactors=FALSE)
   obj1.an$Symbol<-ags$Symbol
   obj2.an<-obj1.an[complete.cases(obj1.an),]
-  obj2.pr<-obj1.an[isNA(obj1.an$Symbol==TRUE),]
+  obj2.pr<-obj1.an[is.na(obj1.an$Symbol==TRUE),]
   ###For no selection and all data preserved###
   if(delete.NA==FALSE && gene.multiples ==TRUE){
     rownames(obj2.an)<-make.unique(obj2.an$Symbol, sep = "#")

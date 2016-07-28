@@ -10,7 +10,6 @@ setClass("ColObj", slots=c(
   match="list"), package="probedeeper")
 
 
-
 ColObjInit<-function(ColObj, LD=80){
   if(class(ColObj)!="ColObj"){stop("Input is not a ColObj class")}
   selected<-levels(ColObj@classvec)
