@@ -1,5 +1,6 @@
 ####PCA.SF####
 PCA.SF<-function(xdata, ydata, classvector, colors, patientcolors,title, level=0.95){
+library(ggplot2)
 if(length(levels(classvector))!=length(colors)){stop("vector lengths are not matching")}
 if(length((classvector))!=length(patientcolors)){stop("vector lengths are not matching")}
 #dfr<-as.data.frame(cbind(pca1$li$Axis1, pca1$li$Axis2))
