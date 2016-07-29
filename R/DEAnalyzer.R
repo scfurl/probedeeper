@@ -295,25 +295,25 @@ autoDAVID<-function(vector, input="symbol"){
   library(org.Hs.eg.db)
   david<-RDAVIDWebService::DAVIDWebService(email="sfurlan@uw.edu", url="https://david.ncifcrf.gov/webservice/services/DAVIDWebService.DAVIDWebServiceHttpSoap12Endpoint/")
   if(input=="symbol"){
-  for(i in 1:length(vector)){
     e2s = toTable(org.Hs.egSYMBOL)
-    result<-addList(david, e2s$gene_id[e2s$symbol %in% vector],
+    foundgenes<-e2s$gene_id[e2s$symbol %in% vector]
+    result<-RDAVIDWebService::addList(david, foundgenes,
                     idType="ENTREZ_GENE_ID",
                     listName="autoDavid", listType="Gene")
-    found<-length(which(e2s$gene_id %in% vector))
+    found<-length(foundgenes)
     print(paste("Found ", found, " Annotated Genes of ", length(vector), " Submitted", sep=""))
-    }
   }
   if(input=="ENS"){
     e2s <- toTable(org.Hs.egENSEMBL)
-    result<-addList(david, e2s$gene_id[e2s$ensembl_id %in% vector],
+    foundgenes<-e2s$gene_id[e2s$ensembl_id %in% vector]
+    result<-RDAVIDWebService::addList(david, foundgenes,
                     idType="ENTREZ_GENE_ID",
                     listName="autoDavid", listType="Gene")
-    found<-length(which(e2s$ensembl_id %in% vector))
+    found<-length(foundgenes)
     print(paste("Found ", found, " Annotated Genes of ", length(vector), " Submitted", sep=""))
   }
-    setAnnotationCategories(david, c("PANTHER_PATHWAY","BIOCARTA", "REACTOME_PATHWAY","KEGG_PATHWAY"))
-    Table<-getFunctionalAnnotationChart(david)
+  RDAVIDWebService::setAnnotationCategories(david, c("PANTHER_PATHWAY","BIOCARTA", "REACTOME_PATHWAY","KEGG_PATHWAY"))
+    Table<-RDAVIDWebService::getFunctionalAnnotationChart(david)
     df<-data.frame(Table@.Data, stringsAsFactors=FALSE)
     colnames(df)<-(Table@names)
     if(input=="ENS"){
