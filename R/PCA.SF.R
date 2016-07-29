@@ -30,7 +30,5 @@ g<-ggplot2::ggplot(data=dfr, ggplot2::aes(x=x, y=y)) + ggplot2::geom_point(colou
 for(i in 1:length(levels(as.factor(dfr_ell$group)))){
   g<-g+ggplot2::geom_path(data=dfr_ell[dfr_ell$group==levels(as.factor(dfr_ell$group))[i],], ggplot2::aes(x=x, y=y), size=0.2, colour=levels(factor(patientcolors, levels = unique(patientcolors)))[i], linetype=1)
   g<-g+ggplot2::geom_polygon(data=dfr_ell[dfr_ell$group==levels(as.factor(dfr_ell$group))[i],], ggplot2::aes(x=x, y=y), fill=levels(factor(patientcolors, levels = unique(patientcolors)))[i], alpha=0.1, linetype=0) }
-
-print(g)
 return(g)
 }
