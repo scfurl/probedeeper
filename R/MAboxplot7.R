@@ -69,6 +69,7 @@ MAboxplot7<-function(gene, array, limma.obj=NULL, classvec, ColObj=NULL,
   line.cols<-line.cols[reorder]
   dot.fill.cols<-dot.fill.cols[reorder]
   box.fill.cols<-box.fill.cols[reorder]
+  }
   if(is.null(ColObj)==TRUE){classvec<-factor(classvec,levels(classvec)[reorder])
                               line.cols<-line.cols[reorder]
                               dot.fill.cols<-dot.fill.cols[reorder]
@@ -206,7 +207,7 @@ makeFootnote <- function(footnoteText =
             gp = grid::gpar(cex = size, col = color))
   grid::popViewport()
 }
-}
+
 
 extractColor<-function(classvec.sel, cols.list, show="fill"){
   selected<-levels(classvec.sel)
