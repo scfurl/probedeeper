@@ -179,7 +179,6 @@ MAboxplot7<-function(gene, array, limma.obj=NULL, classvec, ColObj=NULL,
               panel.border = ggplot2::element_blank(),
               panel.background = ggplot2::element_blank())
       if(nrow(array.ind)==0){
-        print(g)
       }
       else
       {
