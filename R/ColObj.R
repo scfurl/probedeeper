@@ -25,5 +25,24 @@ ColObjInit<-function(ColObj, LD=80){
   return(ColObj)
 }
 
+ColObjCreate<-function(classvec, LD=80, type='rainbow'){
+  if(type=='rainbow'){
+#     file<-"~/Dropbox (Kean Lab)/AWS/Scott/Rproj/Kymab/Classvec"
+#     classvec<-readRDS(file)
+    selected<-levels(classvec)
+    colmatch<-rainbow(length(selected))
+    names(colmatch)<-selected
+    color.ws<-data.frame(Group=selected, ColorLabel=make.unique(rep("Color", length(selected))), Color=    sapply(colmatch, substring, 2,9))
+    ColObj<-new('ColObj', assign=color.ws, classvec=classvec)
+    ColObj@full$line<-colmatch[match(ColObj@classvec, names(colmatch))]
+    ColObj@full$fill<-sapply(ColObj@full$line, LightenDarkenColor, LD)
+    ColObj@match$line<-colmatch
+    ColObj@match$fill<-sapply(colmatch, LightenDarkenColor, LD)
+    par(mfrow=c(1,2))
+    pie(rep(1,length(ColObj@match$line)), col=ColObj@match$line, labels=names(ColObj@match$line), main="Line Colors")
+    pie(rep(1,length(ColObj@match$fill)), col=ColObj@match$fill, labels=names(ColObj@match$fill), main="Fill Colors")
+  }
 
+
+}
 
