@@ -40,9 +40,9 @@ LimmaObjCreate<-function(eset, ColObj, element1=NULL, element2=NULL, pvalue.thre
   tmp<-paste(names(colnames(mydesign))[match(as.character(contrast.mat[2,]), colnames(mydesign))],
              names(colnames(mydesign))[match(contrast.mat[3,], colnames(mydesign))], sep="v")
   contrast.mat<-rbind(contrast.mat, tmp)
-  # contrast.list<-list(coef=contrast.mat[1,], meaning=contrast.mat[4,])
-  contrast.df<-data.frame(label=colnames(contrast.mat), coef=as.character(contrast.mat[1,]), meaning=as.character(contrast.mat[4,]))
-  #limmaDE.output<-contrast.list
+  contrast.list<-list(coef=contrast.mat[1,], meaning=contrast.mat[4,])
+  contrast.df<-data.frame(label=colnames(contrast.mat), coef=as.character(contrast.mat[1,]), meaning=as.character(contrast.mat[4,]), stringsAsFactors=FALSE)
+  limmaDE.output<-contrast.list
   LimmaObj<-new('LimmaObj')
   LimmaObj@Contrasts<-contrast.df
   tmp.list<-list()

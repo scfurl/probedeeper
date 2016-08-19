@@ -10,10 +10,19 @@ setClass("ColObj", slots=c(
   match="list"), package="probedeeper")
 
 
+
 ColObjInit<-function(ColObj, LD=80){
   if(class(ColObj)!="ColObj"){stop("Input is not a ColObj class")}
   selected<-levels(ColObj@classvec)
-  colmatch<-paste("#", ColObj@assign$Color[match(selected,ColObj@assign$Group)], sep="")
+  ColObj@assign<-ColObj@assign[match(selected,ColObj@assign$Group),]
+  colmatch<-vector()
+  if(substring(ColObj@assign$Color[1], 1,1)!="#") {
+    colmatch<-paste("#", ColObj@assign$Color[match(selected,ColObj@assign$Group)], sep="")
+  }
+  else
+  {
+    colmatch<-ColObj@assign$Color[match(selected,ColObj@assign$Group)]
+  }
   names(colmatch)<-ColObj@assign$Group[match(selected,ColObj@assign$Group)]
   ColObj@full$line<-colmatch[match(ColObj@classvec, names(colmatch))]
   ColObj@full$fill<-sapply(ColObj@full$line, LightenDarkenColor, LD)
@@ -24,6 +33,8 @@ ColObjInit<-function(ColObj, LD=80){
   pie(rep(1,length(ColObj@match$fill)), col=ColObj@match$fill, labels=names(ColObj@match$fill), main="Fill Colors")
   return(ColObj)
 }
+
+
 
 ColObjCreate<-function(classvec, LD=80, type='rainbow'){
   if(type=='rainbow'){
