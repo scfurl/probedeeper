@@ -22,39 +22,22 @@
 # setClass("ColPal", representation(pal="character"))
 # new("ColPal", )
 
-CreateColObj<-function(n, factor=60, times = (1 + ceiling((start+(n-1))/17)), pie=TRUE, start=1,
-                         pal=rep(c(RColorBrewer::brewer.pal(9, "Set1"),  RColorBrewer::brewer.pal(8, "Set2")),times))
-  {
-  sel<-end<-start:(start+(n-1))
-  col2<-as.character(sapply(pal, function(x) LightenDarkenColor(x, factor)))
-  col3<-as.character(sapply(col2, function(x) LightenDarkenColor(x, factor+100)))
-   if(pie==TRUE){
-      par(mfrow=c(1,3))
-      pie(rep(1,length(pal[sel])), col=pal[sel], labels=pal[sel])
-      pie(rep(1,length(pal[sel])), col=col2[sel], labels=col2[sel])
-      pie(rep(1,length(pal[sel])), col=col3[sel], labels=col3[sel])
-   }
-  return(list(line=pal[sel], fill=col2[sel], dot=col3[sel]))
-}
+# CreateColObj<-function(n, factor=60, times = (1 + ceiling((start+(n-1))/17)), pie=TRUE, start=1,
+#                          pal=rep(c(RColorBrewer::brewer.pal(9, "Set1"),  RColorBrewer::brewer.pal(8, "Set2")),times))
+#   {
+#   sel<-end<-start:(start+(n-1))
+#   col2<-as.character(sapply(pal, function(x) LightenDarkenColor(x, factor)))
+#   col3<-as.character(sapply(col2, function(x) LightenDarkenColor(x, factor+100)))
+#    if(pie==TRUE){
+#       par(mfrow=c(1,3))
+#       pie(rep(1,length(pal[sel])), col=pal[sel], labels=pal[sel])
+#       pie(rep(1,length(pal[sel])), col=col2[sel], labels=col2[sel])
+#       pie(rep(1,length(pal[sel])), col=col3[sel], labels=col3[sel])
+#    }
+#   return(list(line=pal[sel], fill=col2[sel], dot=col3[sel]))
+# }
 
-LightenDarkenColor<-function(col, amt) {
-  if (substring(col, 1, 1)=="#") {
-    col = substring(col, 2)
-  }
-  num = as.hexmode(col)
-  r = bitwShiftR(num, 16) + amt
-  if (r > 255) {r = 255}
-  if  (r < 0) {r = 0}
-  b = bitwAnd(bitwShiftR(num, 8), 0x00FF) + amt
-  if (b > 255) {b = 255}
-  if  (b < 0) {b = 0}
-  g = bitwAnd(num, 0x0000FF) + amt
-  if (g > 255) {g = 255}
-  if (g < 0) {g = 0}
-  inter<-paste("000000", as.hexmode(bitwOr(g , bitwOr(bitwShiftL(b, 8), bitwShiftL(r, 16)))), sep="")
-  ret<-substr(inter, nchar(inter)-5, nchar(inter))
-  return(toupper(paste("#", ret, sep="")))
-}
+
 #debug(MAboxplot6)
 
 MAboxplot7<-function(gene, array, limma.obj=NULL, classvec, ColObj=NULL,
@@ -208,18 +191,18 @@ makeFootnote <- function(footnoteText =
 }
 
 
-extractColor<-function(classvec.sel, cols.list, show="fill"){
-  selected<-levels(classvec.sel)
-  colmatch<-data.frame(names = cols.list$group[match(selected,cols.list$group)],
-                       line = cols.list$cols[match(selected,cols.list$group)],
-                       fill = cols.list$fill[match(selected,cols.list$group)], stringsAsFactors=FALSE)
-  colmatch.ord<-colmatch[order(colmatch$names),]
-  if(show=="fill"){
-  pie(rep(1,nrow(colmatch.ord)), col=colmatch.ord$fill, labels=colmatch.ord$names)}
-  else
-  {pie(rep(1,nrow(colmatch.ord)), col=colmatch.ord$line, labels=colmatch.ord$names)}
-  return(colmatch)
-}
+# extractColor<-function(classvec.sel, cols.list, show="fill"){
+#   selected<-levels(classvec.sel)
+#   colmatch<-data.frame(names = cols.list$group[match(selected,cols.list$group)],
+#                        line = cols.list$cols[match(selected,cols.list$group)],
+#                        fill = cols.list$fill[match(selected,cols.list$group)], stringsAsFactors=FALSE)
+#   colmatch.ord<-colmatch[order(colmatch$names),]
+#   if(show=="fill"){
+#   pie(rep(1,nrow(colmatch.ord)), col=colmatch.ord$fill, labels=colmatch.ord$names)}
+#   else
+#   {pie(rep(1,nrow(colmatch.ord)), col=colmatch.ord$line, labels=colmatch.ord$names)}
+#   return(colmatch)
+# }
 
 SigLevel<-function(vector){
   return(sapply(vector, function(x) ifelse(x>0.001 && x<0.05, "*", ifelse(x<0.001, "**", "NS"))))

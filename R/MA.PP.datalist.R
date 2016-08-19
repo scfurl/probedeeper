@@ -20,7 +20,7 @@ analyseMAdatalist<-function(data.list){
     pca1 <- dudi.pca(t(data.tmp), scann = FALSE, nf=10)
     s.class(dfxy = pca1$li, fac = data.list@Other$classvec, col=data.list@Other$gcolor, xax = 1, yax = 2,
             sub=paste("Groups-", data.list@Suffix, names(data.list@Data)[i], sep="-"))
-    s.class(dfxy = pca1$li, fac = as.factor(data.list@Phenodata$Batch), col=c("darkgreen", "darkorange"), xax = 1, yax = 2, 
+    s.class(dfxy = pca1$li, fac = as.factor(data.list@Phenodata$Batch), col=c("darkgreen", "darkorange"), xax = 1, yax = 2,
             sub=paste("Batches-", data.list@Suffix, names(data.list@Data)[i], sep="-"))
   }
   dev.off()
@@ -36,17 +36,17 @@ SFHist<-function(matrix, colors=rainbow(ncol(matrix)), title){
   }
 }
 
-getColors<-function(classvec, colFile, pie=FALSE){
-  if(file.exists(colFile)==FALSE){stop("file does not exist")}
-  pal<-read.table(colFile, header=TRUE, stringsAsFactors=FALSE)
-  cols<-list(cols=c(rgb(pal$R/255,pal$G/255,pal$B/255))[!is.na(pal$Group)], name=pal$Name[!is.na(pal$Group)], group=pal$Group[!is.na(pal$Group)])
-  selected<-levels(as.factor(classvec))
-  colmatch<-cols$cols[match(selected,cols$group)]
-  names(colmatch)<-cols$group[match(selected,cols$group)]
-  #pie(rep(1,length(colmatch)), col=colmatch, labels=names(colmatch))
-  if(pie==TRUE){
-    pie(rep(1,length(gcolor)), col=gcolor, labels=names(gcolor))
-  }
-  gcolor<-colmatch[order(names(colmatch))]
-  return(gcolor)
-}
+# getColors<-function(classvec, colFile, pie=FALSE){
+#   if(file.exists(colFile)==FALSE){stop("file does not exist")}
+#   pal<-read.table(colFile, header=TRUE, stringsAsFactors=FALSE)
+#   cols<-list(cols=c(rgb(pal$R/255,pal$G/255,pal$B/255))[!is.na(pal$Group)], name=pal$Name[!is.na(pal$Group)], group=pal$Group[!is.na(pal$Group)])
+#   selected<-levels(as.factor(classvec))
+#   colmatch<-cols$cols[match(selected,cols$group)]
+#   names(colmatch)<-cols$group[match(selected,cols$group)]
+#   #pie(rep(1,length(colmatch)), col=colmatch, labels=names(colmatch))
+#   if(pie==TRUE){
+#     pie(rep(1,length(gcolor)), col=gcolor, labels=names(gcolor))
+#   }
+#   gcolor<-colmatch[order(names(colmatch))]
+#   return(gcolor)
+# }
