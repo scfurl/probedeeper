@@ -109,7 +109,7 @@ MAboxplot<-function(gene=NULL,
       }
     }
     print(g)
-    footie1<-ifelse(stat.test=="limma", paste("Mod. Bayesian T statistic corrected using ", limma.obj[[6]]$p.adjust, sep=""), "Pairwise T Test, FDR-corrected")
+    footie1<-ifelse(stat.test=="limma", paste("Mod. Bayesian T statistic corrected using ", LimmaObj@Inputs$p.adjust, sep=""), "Pairwise T Test, FDR-corrected")
     Footnote.txt<-paste("Horizontal bars indicate p <0.05 using ", footie1, sep="")
     makeFootnote(Footnote.txt,  color = "black")
   }
