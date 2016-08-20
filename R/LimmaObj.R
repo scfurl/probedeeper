@@ -41,10 +41,15 @@ LimmaObjCreate<-function(eset, ColObj, element1=NULL, element2=NULL, pvalue.thre
              names(colnames(mydesign))[match(contrast.mat[3,], colnames(mydesign))], sep="v")
   contrast.mat<-rbind(contrast.mat, tmp)
   contrast.list<-list(coef=contrast.mat[1,], meaning=contrast.mat[4,])
-  contrast.df<-data.frame(label=colnames(contrast.mat), coef=as.character(contrast.mat[1,]), meaning=as.character(contrast.mat[4,]), stringsAsFactors=FALSE)
+  contrast.df<-data.frame(
+    label=colnames(contrast.mat),
+    coef=as.character(contrast.mat[1,]),
+    meaning=as.character(contrast.mat[4,]),
+    comp1=names(colnames(mydesign))[match(contrast.mat[2,], colnames(mydesign))],
+    comp2=names(colnames(mydesign))[match(contrast.mat[3,], colnames(mydesign))],
+    stringsAsFactors=FALSE)
   limmaDE.output<-contrast.list
   LimmaObj<-new('LimmaObj')
-  LimmaObj@Contrasts<-contrast.df
   tmp.list<-list()
   tmp.list2<-list()
   for(i in 1:length(contrast.list[[1]])){
@@ -59,12 +64,26 @@ LimmaObjCreate<-function(eset, ColObj, element1=NULL, element2=NULL, pvalue.thre
   LimmaObj@AllGenes<-tmp.list
 #   names(limmaDE.output)[4]<-"AllLimmaDEData"
 #   names(limmaDE.output)[3]<-"SigLimmaDEData"
-#   comp1<-names(colnames(mydesign))[match(contrast.mat[2,], colnames(mydesign))]
-#   comp2<-names(colnames(mydesign))[match(contrast.mat[3,], colnames(mydesign))]
+
+   LimmaObj@Contrasts<-contrast.df
 #   limmaDE.output[5]<-list(Comparisons.df=data.frame(Comp1=comp1, Comp2=comp2))
   LimmaObj@Inputs<-list(p.adjust=adjust.method, p.thresh=pvalue.thresh, lfc.thresh=lfc.thresh)
 #   if(printdata==TRUE){
 #     print(names(limmaDE.output[[3]]))
 #   }
   return(LimmaObj)
+}
+
+ExtractLimmaObj<-function(gene, LimmaObj){
+  rownamesdf<-LimmaObj@Contrasts$meaning
+  sigLevel<-vector()
+  logFC<-vector()
+  PVal<-vector()
+  for(i in 1:length(rownamesdf)){
+    logFC[i]<-LimmaObj@AllGenes[[i]][gene,]$logFC
+    PVal[i]<-LimmaObj@AllGenes[[i]][gene,]$adj.P.Val
+    sigLevel[i]<-SigLevel(PVal[i])
+  }
+  df<-data.frame(logFC=logFC, adj.P.Val=PVal, sigLevel=sigLevel, row.names=rownamesdf)
+  return(df)
 }

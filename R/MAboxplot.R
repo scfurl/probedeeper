@@ -1,8 +1,17 @@
-MAboxplot<-function(gene, eset, ColObj=NULL,
-                     alpha=0.8, dot.size=6, box.size=1, box.width=1,
-                     reorder=NULL, stat.test="pairwiset", annotate=TRUE, p.value=0.05, sampleNames=NULL){
-
-  if(is.null(ColObj)==TRUE){stop("Need ColObj")}
+MAboxplot<-function(gene=NULL,
+                    PDObj,
+                    alpha=0.8,
+                    dot.size=6,
+                    box.size=1,
+                    box.width=1,
+                    reorder=NULL,
+                    stat.test="limma",
+                    annotate=TRUE,
+                    p.value=0.05,
+                    sampleNames=NULL){
+  if(class(PDObj)!="PDObj"){stop("PDObj does not appear correct")}
+  if(is.null(gene)==TRUE){stop("No gene input")}
+  ColObj<-PDObj@ColObj
   classvec<-as.factor(ColObj@classvec)
   line.cols<-ColObj@match$line
   dot.fill.cols<-ColObj@match$fill
@@ -17,6 +26,7 @@ MAboxplot<-function(gene, eset, ColObj=NULL,
   dot.fill.cols<-dot.fill.cols[reorder]
   box.fill.cols<-box.fill.cols[reorder]
   }
+  eset<-PDObj@eset
   obj<-Biobase::exprs(eset)[gene,]
   df<-data.frame(gp=classvec, y=obj)
   maxh <- max(df$y)
@@ -30,8 +40,8 @@ MAboxplot<-function(gene, eset, ColObj=NULL,
     stats<-pairwise.t.test(df$y, classvec, p.adjust="fdr")
   }
   if(stat.test=="limma"){
-    probedeeper::autoLIMMA
-    stat.df<-data.frame(Comp1=as.factor(limma.obj[[5]]$Comp1), Comp2=as.factor(limma.obj[[5]]$Comp2), p.value=ExtractLIMMA(limma.obj, gene)$adj.P.Val, stringsAsFactors=FALSE)
+
+    stat.df<-data.frame(Comp1=as.factor(PDObj@LimmaObj@Contrasts$comp1), Comp2=as.factor(PDObj@LimmaObj@Contrasts$comp2), p.value=ExtractLimmaObj(gene, PDObj@LimmaObj)$adj.P.Val, stringsAsFactors=FALSE)
     stat.df<-stats.table(stat.df)
     if(length(levels(classvec))==2){
       if(is.null(reorder)==FALSE){
@@ -150,19 +160,6 @@ makeFootnote <- function(footnoteText =
   grid::popViewport()
 }
 
-
-extractColor<-function(classvec.sel, cols.list, show="fill"){
-  selected<-levels(classvec.sel)
-  colmatch<-data.frame(names = cols.list$group[match(selected,cols.list$group)],
-                       line = cols.list$cols[match(selected,cols.list$group)],
-                       fill = cols.list$fill[match(selected,cols.list$group)], stringsAsFactors=FALSE)
-  colmatch.ord<-colmatch[order(colmatch$names),]
-  if(show=="fill"){
-    pie(rep(1,nrow(colmatch.ord)), col=colmatch.ord$fill, labels=colmatch.ord$names)}
-  else
-  {pie(rep(1,nrow(colmatch.ord)), col=colmatch.ord$line, labels=colmatch.ord$names)}
-  return(colmatch)
-}
 
 SigLevel<-function(vector){
   return(sapply(vector, function(x) ifelse(x>0.001 && x<0.05, "*", ifelse(x<0.001, "**", "NS"))))
