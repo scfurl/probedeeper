@@ -10,7 +10,7 @@ setClass("MultipleClassGSEAObject", representation(
 
 
 ###GSEA on Unaffected Genes####
-MultipleClassGSEAnew<-function(data.GSEA, Comparison1, Comparison2, GMTList, classvec=classvec.sel, runGSEAcode=TRUE, reshuffling.type, directory=getwd(), uniquelabel=""){
+MultipleClassGSEA<-function(data.GSEA, Comparison1, Comparison2, GMTList, classvec=classvec.sel, runGSEAcode=TRUE, reshuffling.type, directory=getwd(), uniquelabel=""){
 #   os<-Sys.info()['sysname']
 #   if(os=="Darwin"){GSEA.program.location <- "/Library/Frameworks/R.framework/Resources/library/GSEA/GSEA.1.0.R"}   #  R source program (change pathname to the rigth location in local machine)
 #   source(GSEA.program.location, verbose=T, max.deparse.length=9999)
@@ -19,7 +19,7 @@ MultipleClassGSEAnew<-function(data.GSEA, Comparison1, Comparison2, GMTList, cla
     uniquelabel<-paste("-", uniquelabel, sep="")
   }
   mdirectory<-paste(file.path(directory, "GSEA"))
-   rdirectory<-file.path(mdirectory, "GSEA", paste(datestamp, "-", uniquelabel, sep=""))
+   rdirectory<-file.path(mdirectory, paste(datestamp, "-", uniquelabel, sep=""))
    fdirectory<-file.path(rdirectory, paste("Files-", datestamp, sep=""))
    odirectory<-file.path(rdirectory, paste("Output-", datestamp, sep=""))
 
@@ -30,8 +30,8 @@ MultipleClassGSEAnew<-function(data.GSEA, Comparison1, Comparison2, GMTList, cla
    if(length(Comp2)==1){Comp2<-rep(Comparison2, length(Comparison1))}
    if(length(Comparison2)!=1 && length(Comparison1)!=1){stop("Input Problem")}
    GSEAcomplist<-list(Number=max(c(length(Comparison1), length(Comparison2))), Comp1=Comp1, Comp2=Comp2,
-                      Prefix=paste(str_replace_all(str_replace_all(Comparison1, c("[[:lower:]]"), ""), "([.])", ""),
-                                   str_replace_all(str_replace_all(Comparison2, c("[[:lower:]]"), ""), "([.])", ""), sep="v"),
+                      Prefix=paste(stringr::str_replace_all(stringr::str_replace_all(Comparison1, c("[[:lower:]]"), ""), "([.])", ""),
+                                   stringr::str_replace_all(stringr::str_replace_all(Comparison2, c("[[:lower:]]"), ""), "([.])", ""), sep="v"),
                       Signreverse=!substring(Comparison1,1,1)<substring(Comparison2,1,1))
    Objectinfo<-list(GSEACompList=GSEAcomplist, GMTList=GMTList, Directory=odirectory, TimeStamp=Sys.time())
   MCGO<-new("MultipleClassGSEAObject", ObjectInfo=Objectinfo,
@@ -52,9 +52,9 @@ MultipleClassGSEAnew<-function(data.GSEA, Comparison1, Comparison2, GMTList, cla
     gsea.write.gmt(GMTList, GMTfile)
   }
   for(i in 1:GSEAcomplist[["Number"]]){
-    file.cls<-paste(fdirectory, GSEAcomplist$Prefix[i], ".cls", sep="")
+    file.cls<-file.path(fdirectory, paste(GSEAcomplist$Prefix[i], ".cls", sep=""))
     data.cls<-as.character(classvec[classvec %in% c(GSEAcomplist$Comp1[i],GSEAcomplist$Comp2[i])])
-    file.gct<-paste(fdirectory, GSEAcomplist$Prefix[i], ".gct", sep="")
+    file.gct<-file.path(fdirectory, paste(GSEAcomplist$Prefix[i], ".gct", sep=""))
     col.sel<-classvec %in% c(GSEAcomplist$Comp1[i],GSEAcomplist$Comp2[i])
     data.gct<-data.GSEA[,col.sel]
     wdirectory<-paste(odirectory, GSEAcomplist$Prefix[i], "/",sep="")
@@ -62,8 +62,8 @@ MultipleClassGSEAnew<-function(data.GSEA, Comparison1, Comparison2, GMTList, cla
     gsea.write.cls(data.cls, file.cls)
     gsea.write.gct(data.gct, file.gct)
     dir.create(wdirectory, showWarnings = FALSE)
-      RunGSEA(in.data = paste(fdirectory, GSEAcomplist$Prefix[i], ".gct", sep=""),
-              in.cls =paste(fdirectory, GSEAcomplist$Prefix[i], ".cls", sep=""),
+    RunGSEA(in.data = file.path(fdirectory, paste(GSEAcomplist$Prefix[i], ".gct", sep="")),
+            in.cls =file.path(fdirectory, paste(GSEAcomplist$Prefix[i], ".cls", sep="")),
               in.gmt =  GMTfile,
               directory      = wdirectory,
               prefix            = GSEAcomplist$Prefix[i],
