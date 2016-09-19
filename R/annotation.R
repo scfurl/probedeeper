@@ -68,14 +68,15 @@ masterannotate<-function(obj1, gene.multiples=FALSE, delete.NA=TRUE, method="max
   return(collapse.object$datETcollapsed)
 }
 
-annotatePerFile<-function(obj1, file=NULL, gene.multiples=FALSE, delete.NA=TRUE, method="maxRowVariance"){
+annotatePerFile<-function(obj1, file=NULL, gene.multiples=FALSE, delete.NA=TRUE, method="maxRowVariance", genecode="Symbol", probecode="ID"){
   require(WGCNA)
   ###gene.multiples = t/f allow multiple gene annotations - will make unique symbol names
   ###delete.NA = delete NA annotations; if FALSE will annotate with probe names
   ### This function removes unannotated genes ####
   ### This function also calculates median expression for genes that have multiple probes ####
   annotation.file<-read.csv(file, header= TRUE, colClasses='character')
-  symbol<-data.frame(Symbol=annotation.file$Symbol, row.names=annotation.file$ID, stringsAsFactors=FALSE)
+
+  symbol<-data.frame(Symbol=annotation.file[,genecode], row.names=annotation.file[,probecode], stringsAsFactors=FALSE)
   #colnames(symbol)<-"Symbol"
   ags<-as.data.frame(symbol[row.names(obj1),], stringsAsFactors=FALSE)
   colnames(ags)<-"Symbol"

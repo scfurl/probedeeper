@@ -83,8 +83,8 @@ MAboxplot<-function(gene=NULL,
   if(length(sampleNames)!=0){
     df$sampleNames<-sampleNames
     g<-ggplot2::ggplot(df, ggplot2::aes(x = gp, y = y)) +
-      ggplot2::geom_boxplot(size=box.size, alpha=0.6, fill=box.fill.cols, colour=line.cols, outlier.size=NULL, width=box.width) +
-      ggplot2::geom_point(size=dot.size, shape=21, colour=line.cols[classvec], width=box.width, fill=dot.fill.cols[classvec], alpha=alpha, position = ggplot2::position_jitter(width = .1)) +
+      ggplot2::geom_boxplot(size=box.size, alpha=0.6, fill=box.fill.cols, colour=line.cols, width=box.width, outlier.size=NULL, width=box.width) +
+      ggplot2::geom_point(size=dot.size, shape=21, colour=line.cols[classvec], fill=dot.fill.cols[classvec], alpha=alpha, position = ggplot2::position_jitter(width = .1)) +
       ggplot2::geom_text(data=df, ggplot2::aes(x = gp, y = y, label=sampleNames), size = 3, hjust=-1) +
       ggplot2::labs(list(x = NULL, y = "Log2 Transformed Data", title=gene)) +
       #ylab(expression(paste("Log", [2], " Transformed Data", sep="")))+
@@ -93,12 +93,12 @@ MAboxplot<-function(gene=NULL,
                      axis.title.x=ggplot2::element_text(size=20, vjust=1),
                      axis.text.x = ggplot2::element_text(angle = 45, hjust=1),
                      axis.title.y=ggplot2::element_text(size=16, vjust=0.5), plot.title = ggplot2::element_text(vjust = 0, size=20),
-                     axis.line = ggpolt2::element_line(colour = "black"),
+                     axis.line = ggplot2::element_line(colour = "black"),
                      #text=ggplot2::element_text(family="Myriad Pro"),
-                     panel.grid.major = ggpolt2::element_blank(),
-                     panel.grid.minor = ggpolt2::element_blank(),
-                     panel.border = ggpolt2::element_blank(),
-                     panel.background = ggpolt2::element_blank())
+                     panel.grid.major = ggplot2::element_blank(),
+                     panel.grid.minor = ggplot2::element_blank(),
+                     panel.border = ggplot2::element_blank(),
+                     panel.background = ggplot2::element_blank())
     if(nrow(array.ind)==0){
       print(g)
     }

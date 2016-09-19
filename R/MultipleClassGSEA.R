@@ -10,7 +10,7 @@ setClass("MultipleClassGSEAObject", representation(
 
 
 ###GSEA on Unaffected Genes####
-MultipleClassGSEAnew<-function(data.GSEA, Comparison1, Comparison2, GMTList, classvec=classvec.sel, runGSEAcode=TRUE, reshuffling.type, uniquelabel=""){
+MultipleClassGSEAnew<-function(data.GSEA, Comparison1, Comparison2, GMTList, classvec=classvec.sel, runGSEAcode=TRUE, reshuffling.type, directory=getwd(), uniquelabel=""){
 #   os<-Sys.info()['sysname']
 #   if(os=="Darwin"){GSEA.program.location <- "/Library/Frameworks/R.framework/Resources/library/GSEA/GSEA.1.0.R"}   #  R source program (change pathname to the rigth location in local machine)
 #   source(GSEA.program.location, verbose=T, max.deparse.length=9999)
@@ -18,12 +18,12 @@ MultipleClassGSEAnew<-function(data.GSEA, Comparison1, Comparison2, GMTList, cla
   if(uniquelabel!=""){
     uniquelabel<-paste("-", uniquelabel, sep="")
   }
-   rdirectory<-paste("GSEA/", datestamp, uniquelabel, "/", sep="")
-   fdirectory<-paste(rdirectory, "Files-", datestamp, "/", sep="")
+  mdirectory<-paste(file.path(directory, "GSEA"))
+   rdirectory<-file.path(mdirectory, "GSEA", paste(datestamp, "-", uniquelabel, sep=""))
+   fdirectory<-file.path(rdirectory, paste("Files-", datestamp, sep=""))
+   odirectory<-file.path(rdirectory, paste("Output-", datestamp, sep=""))
 
-   odirectory<-paste(rdirectory, "Output-", datestamp, "/", sep="")
-
-   GMTfile<-paste(fdirectory, "GMTFile.gmt", sep="")
+   GMTfile<-file.path(fdirectory, "GMTFile.gmt")
    Comp1<-Comparison1
    Comp2<-Comparison2
    if(length(Comp1)==1){Comp1<-rep(Comparison1, length(Comparison2))}
