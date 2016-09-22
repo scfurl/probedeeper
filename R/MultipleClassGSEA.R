@@ -10,7 +10,7 @@ setClass("MultipleClassGSEAObject", representation(
 
 
 ###GSEA on Unaffected Genes####
-MultipleClassGSEA<-function(data.GSEA, Comparison1, Comparison2, GMTList, classvec=classvec.sel, runGSEAcode=TRUE, reshuffling.type, directory=getwd(), uniquelabel=""){
+MultipleClassGSEA<-function(data.GSEA, Comparison1, Comparison2, GMTList, classvec=NULL, runGSEAcode=TRUE, reshuffling.type, directory=getwd(), uniquelabel=""){
 #   os<-Sys.info()['sysname']
 #   if(os=="Darwin"){GSEA.program.location <- "/Library/Frameworks/R.framework/Resources/library/GSEA/GSEA.1.0.R"}   #  R source program (change pathname to the rigth location in local machine)
 #   source(GSEA.program.location, verbose=T, max.deparse.length=9999)
