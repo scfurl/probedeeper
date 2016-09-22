@@ -149,7 +149,7 @@ PlotMultipleClassGSEAObject<-function(MCGO, index, plotcols=rep("Black", length(
     dflist[[i]]<-cbind(dflist[[i]], YRUG, stringsAsFactors=FALSE)
   }
   fdrstats<-data.frame(FDR=fdr, lRES=lRES, x=x, y=y)
-g<-ggplot() +
+g<-ggplot2::ggplot() +
   geom_line(data=dflist[[1]], aes(x=LOC, y=RES), colour=plotcols[1])+
   geom_vline(data=plotdf[1,], aes(xintercept=dotted), colour=plotcols[1], linetype="dotted", size=0.8)+
   geom_abline(intercept=0, slope=0)+
@@ -268,7 +268,7 @@ PlotMultipleEnrichmentPlots<-function(filelist, plotcols=rep("Black", length(fil
     dflist[[i]]<-cbind(dflist[[i]], YRUG, stringsAsFactors=FALSE)
   }
 
-  g<-ggplot() +
+  g<-ggplot2::ggplot() +
     geom_line(data=dflist[[1]], aes(x=LIST.LOC, y=RES), colour=plotcols[1])+
     geom_vline(data=PlotData[1,], aes(xintercept=dotted), colour=plotcols[1], linetype="dotted", size=0.8)+
     geom_abline(intercept=0, slope=0)+
