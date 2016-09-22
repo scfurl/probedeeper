@@ -150,25 +150,25 @@ PlotMultipleClassGSEAObject<-function(MCGO, index, plotcols=rep("Black", length(
   }
   fdrstats<-data.frame(FDR=fdr, lRES=lRES, x=x, y=y)
 g<-ggplot2::ggplot() +
-  geom_line(data=dflist[[1]], aes(x=LOC, y=RES), colour=plotcols[1])+
-  geom_vline(data=plotdf[1,], aes(xintercept=dotted), colour=plotcols[1], linetype="dotted", size=0.8)+
-  geom_abline(intercept=0, slope=0)+
-  geom_point(data=dflist[[1]],aes(x=LOC, y=YRUG, size=as.factor(ENRICHMENT)),colour=plotcols[1], shape=124)+
+  ggplot2::geom_line(data=dflist[[1]], aes(x=LOC, y=RES), colour=plotcols[1])+
+  ggplot2::geom_vline(data=plotdf[1,], aes(xintercept=dotted), colour=plotcols[1], linetype="dotted", size=0.8)+
+  ggplot2::geom_abline(intercept=0, slope=0)+
+  ggplot2::geom_point(data=dflist[[1]],aes(x=LOC, y=YRUG, size=as.factor(ENRICHMENT)),colour=plotcols[1], shape=124)+
   #geom_text(data=stats, colour=plotcols[1], aes(label = fdrstats[1], x = -200, y = -0.2))+
   theme_bw()
 if(length(dflist)>1){
 for(i in 2:length(dflist)){
-  g<-g+geom_line(data=dflist[[i]], aes(x=LOC, y=RES), colour=plotcols[i])
-  g<-g+geom_vline(data=plotdf[i,], aes(xintercept=dotted), colour=plotcols[i], linetype="dotted", size=0.8)
-  g<-g+geom_point(data=dflist[[i]],aes(x=LOC, y=YRUG, size=as.factor(ENRICHMENT)),colour=plotcols[i], shape=124)
-  g<-g+ scale_size_manual(values = c(3,6))
+  g<-g+ggplot2::geom_line(data=dflist[[i]], aes(x=LOC, y=RES), colour=plotcols[i])
+  g<-g+ggplot2::geom_vline(data=plotdf[i,], aes(xintercept=dotted), colour=plotcols[i], linetype="dotted", size=0.8)
+  g<-g+ggplot2::geom_point(data=dflist[[i]],aes(x=LOC, y=YRUG, size=as.factor(ENRICHMENT)),colour=plotcols[i], shape=124)
+  g<-g+ ggplot2::scale_size_manual(values = c(3,6))
   #g<-g+ scale_size_discrete(guide=FALSE)
-  g<-g+ theme(legend.position="none")
+  g<-g+ ggplot2::theme(legend.position="none")
 }
 }
-g<-g+ labs(title=names(MCGO@Data)[index])
+g<-g+ ggplot2::labs(title=names(MCGO@Data)[index])
 #g <-g + geom_text(data=fdrstats, aes(label=FDR, x = rep(-200, nrow(fdrstats)), y = seq(min(lRES), (min(lRES)-(nrow(fdrstats)-1)*0.1), -0.1)), colour=plotcols, parse=FALSE, size=4)
-g <-g + geom_text(data=fdrstats, aes(label=FDR, x=x, y=y), colour=plotcols, parse=FALSE, size=4)
+g <-g + ggplot2::geom_text(data=fdrstats, aes(label=FDR, x=x, y=y), colour=plotcols, parse=FALSE, size=4)
 print(g)
 return(g)
 }
