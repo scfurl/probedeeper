@@ -38,6 +38,7 @@ ColObjInit<-function(ColObj, LD=80){
 
 ColObjCreate<-function(classvec, LD=80, type='rainbow'){
   if(type=='rainbow'){
+    if(is.null(classvec)==FALSE & class(classvec)=="factor"){
 #     file<-"~/Dropbox (Kean Lab)/AWS/Scott/Rproj/Kymab/Classvec"
 #     classvec<-readRDS(file)
     selected<-levels(classvec)
@@ -53,6 +54,8 @@ ColObjCreate<-function(classvec, LD=80, type='rainbow'){
     pie(rep(1,length(ColObj@match$line)), col=ColObj@match$line, labels=names(ColObj@match$line), main="Line Colors")
     pie(rep(1,length(ColObj@match$fill)), col=ColObj@match$fill, labels=names(ColObj@match$fill), main="Fill Colors")
     return(ColObj)
+    }
+    else{stop("Check Input - not correct - either not a factor or null")}
   }
 }
 
