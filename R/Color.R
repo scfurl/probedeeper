@@ -17,12 +17,14 @@ readColorFile<-function(file, type="csv", assign=FALSE){
       names(colorsubset)<-data$Assign[data$Assign!=""]
       return(colorsubset)
     }
+    else{
+      stop("Only CSV currently supported")
+    }
+    return(colors)
   }
-  else{
-    stop("Only CSV currently supported")
-  }
-  return(colors)
 }
+
+
 
 # colors<-readColorFile(file)
 # par(mfrow=c(1,2))
