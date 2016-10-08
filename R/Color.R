@@ -13,7 +13,9 @@ readColorFile<-function(file, type="csv", assign=FALSE){
       names(colors)<-data[,1]
     }
     if(assign==TRUE){
-      names(colors[data$Assign!=""])<-data$Assign!=""
+      colorsubset<-colors[data$Assign!=""]
+      names(colorsubset)<-data$Assign[data$Assign!=""]
+      return(colorsubset)
     }
   }
   else{
