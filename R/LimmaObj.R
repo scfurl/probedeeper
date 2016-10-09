@@ -176,6 +176,9 @@ ExtractLimmaObj<-function(gene, LimmaObj){
   df<-data.frame(logFC=logFC, adj.P.Val=PVal, sigLevel=sigLevel, row.names=rownamesdf)
   return(df)
 }
+
+
+
 LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGenes"){
   if(class(object)!="LimmaObj"){stop("Input does not appear to be a LimmaObj")}
   files<-paste(prefix, "-", c("GenesUP.xls","GenesDN.xls", "GenesALL.xls"), sep="")
