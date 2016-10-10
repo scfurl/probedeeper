@@ -311,3 +311,13 @@ quickVenn<-function(list, colors=brewer.pal(length(list),"Paired"), plottype = "
   print(Vstem)
   return(Vstem)
 }
+
+SFHist<-function(matrix, colors=rainbow(ncol(matrix)), title){
+  density.data<-apply(matrix, 2, density)
+  yrange<-max(unlist(lapply(density.data, function(x) max(x$y))))
+  ncols=ncol(matrix)
+  plot(density(matrix[,1]), col=colors[1], main=title, ylim=c(0,yrange))
+  for(i in 2:ncols){
+    lines(density(matrix[,i]), col=colors[i])
+  }
+}

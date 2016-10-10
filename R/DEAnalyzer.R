@@ -1,24 +1,5 @@
 ####DEAnalyzer####
 
-setClass("DEAnalyzerInput", representation(
-  InputGeneSet="list",
-  DEData="list"))
-
-setClass("DEAnalyzerCalcs", representation(
-  ObjectInfo="list",
-  InputGeneSet="list",
-  DEData="list",
-  FoldChange="list",
-  Pvalues="list",
-  UpDnClassvec="list",
-  Up="list",
-  Down="list",
-  GO.BP.UP="list",
-  GO.BP.DN="list",
-  GO.MF.UP="list",
-  GO.MF.DN="list",
-  PW.UP="list",
-  PW.DN="list"))
 
 
 autoLIMMA2DEAnalyzer<-function(limmalist, index.sel){

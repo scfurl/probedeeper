@@ -1,13 +1,5 @@
 
 
-setClass("MultipleClassGSEAObject", representation(
-  ObjectInfo="list",
-  #Contains GSEAcomplist, GMTList, timestamp, odirectory
-  Data="list",
-  #Contains df of Comparisons grouped by GMTList
-  PlotData="list", Stats="list"))
-#Contains statistical data for Enrichment plots
-
 
 ###GSEA on Unaffected Genes####
 MultipleClassGSEA<-function(data.GSEA, Comparison1, Comparison2, GMTList, classvec=NULL, runGSEAcode=TRUE, reshuffling.type, directory=getwd(), uniquelabel=""){

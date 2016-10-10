@@ -3,14 +3,6 @@
 #Essentially, the ColObj has three slots 1) an assignment slot 2) a slot for full color
 #reference (i.e for every sample) and 3) a match slot for an ordered list of colors by matching classvec
 
-setClass("ColObj", slots=c(
-  assign="data.frame",
-  classvec="factor",
-  full="list",
-  match="list"), package="probedeeper")
-
-
-
 ColObjInit<-function(ColObj, LD=80){
   if(class(ColObj)!="ColObj"){stop("Input is not a ColObj class")}
   selected<-levels(ColObj@classvec)

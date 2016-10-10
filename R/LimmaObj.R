@@ -1,11 +1,4 @@
 
-setClass("LimmaObj", slots=c(
-  Contrasts="data.frame",
-  DEGenes="list",
-  AllGenes="list",
-  Inputs="list"), package="probedeeper")
-
-
 LimmaObjCreate<-function(eset, ColObj, element1=NULL, element2=NULL, pvalue.thresh=0.05, lfc.thresh=1, adjust.method="fdr", method="separate", printdata=FALSE){
   ####Auto-LIMMA####
   #inputs data.sel, classvec.sel, element1,(2), pvalue.thresh, lfc.thresh
