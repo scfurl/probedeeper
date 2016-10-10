@@ -13,9 +13,10 @@ LimmaObjCreate<-function(eset, ColObj, element1=NULL, element2=NULL, pvalue.thre
   colnames(mydesign) <- LETTERS2600[seq(from=1, to=length(levels(classvec.sel)))]
   names(colnames(mydesign))<-levels(classvec.sel)
   fit <- limma::lmFit(data.sel, mydesign)
-  mydesign<<-mydesign
   contrast.string<-contrast.eq(colnames(mydesign), element1=element1, element2=element2)
-  contrast.matrix<-do.call(makeContrasts.SF, as.list(contrast.string))
+#   args<-as.list(c(contrast.string, "mydesign"))
+#   names(args)[length(args)]<-"levels"
+  contrast.matrix<-limma::makeContrasts(contrasts=contrast.string, levels=mydesign)
   space1<-unlist(lapply(gregexpr(" ", contrast.string), "[[", 1))
   space2<-unlist(lapply(gregexpr(" ", contrast.string), "[[", 2))
   space3<-unlist(lapply(gregexpr(" ", contrast.string), "[[", 3))
@@ -122,4 +123,8 @@ LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGen
   }
 }
 
-
+# makeContrasts.SF<-function(contrast.string) {
+#   contrast.string=c(contrast.string, "levels = mydesign")
+#   contrasts<-do.call(limma::makeContrasts, as.list(contrast.string), quote=TRUE)
+#   return(contrasts)
+# }

@@ -21,9 +21,7 @@ contrast.eq<-function(vector, element1=seq(1,length(vector)), element2){
   return(vector.out)
 }
 
-makeContrasts.SF<-function(...) {
-  limma::makeContrasts(...,levels = mydesign)
-}
+
 
 # autoLIMMA<-function(data.sel, classvec.sel, element1, element2, pvalue.thresh=0.05, lfc.thresh=1, adjust.method="fdr", method="separate", printdata=FALSE){
 # ####Auto-LIMMA####
