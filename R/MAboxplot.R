@@ -8,7 +8,8 @@ MAboxplot<-function(gene=NULL,
                     stat.test="limma",
                     annotate=TRUE,
                     p.value=0.05,
-                    sampleNames=NULL){
+                    sampleNames=NULL,
+                    error.bars=TRUE){
   if(class(PDObj)!="PDObj"){stop("PDObj does not appear correct")}
   if(is.null(gene)==TRUE){stop("No gene input")}
   ColObj<-PDObj@ColObj
@@ -103,10 +104,11 @@ MAboxplot<-function(gene=NULL,
       print(g)
     }
     else
-    {
+    {if(error.bars==TRUE){
       for(i in 1:nrow(array.ind)){
         g<-g+ggplot2::geom_segment(ggplot2::aes_string(x = array.ind$start[i], y = array.ind$y[i], xend = array.ind$end[i], yend=array.ind$y[i]), lwd=0.5,arrow = arrow(angle=90, ends="both", length = grid::unit(0.1, "cm")))
       }
+    }
     }
     print(g)
     footie1<-ifelse(stat.test=="limma", paste("Mod. Bayesian T statistic corrected using ", PD@LimmaObj@Inputs$p.adjust, sep=""), "Pairwise T Test, FDR-corrected")
