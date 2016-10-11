@@ -24,8 +24,8 @@ g<-ggplot2::ggplot(data=dfr, ggplot2::aes(x=x, y=y)) + ggplot2::geom_point(colou
   ggplot2::geom_hline(yintercept = 0)+
   ggplot2::geom_vline(xintercept = 0)+
   ggplot2::theme_bw()+
-  ggplot2::theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())+
-  ggplot2::theme(axis.ticks.y = element_blank(), axis.text.y = element_blank())+
+  ggplot2::theme(axis.ticks.x = ggplot2::element_blank(), axis.text.x = ggplot2::element_blank())+
+  ggplot2::theme(axis.ticks.y = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank())+
   ggplot2::labs(x=deparse(substitute(xdata)), y=deparse(substitute(ydata)), title=title)
 for(i in 1:length(levels(as.factor(dfr_ell$group)))){
   g<-g+ggplot2::geom_path(data=dfr_ell[dfr_ell$group==levels(as.factor(dfr_ell$group))[i],], ggplot2::aes(x=x, y=y), size=0.2, colour=levels(factor(patientcolors, levels = unique(patientcolors)))[i], linetype=1)
