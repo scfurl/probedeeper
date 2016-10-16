@@ -1,6 +1,8 @@
 ####PCA.SF####
-PCA.SF<-function(xdata, ydata, classvector, colors, patientcolors,title, level=0.95){
+PD.PCAplot<-function(xdata, ydata, ColObj, title, level=0.95){
 #library(ggplot2)
+patientcolors<-ColObj@fill@line
+colors<-ColObj@march@line
 if(length(levels(classvector))!=length(colors)){stop("vector lengths are not matching")}
 if(length((classvector))!=length(patientcolors)){stop("vector lengths are not matching")}
 #dfr<-as.data.frame(cbind(pca1$li$Axis1, pca1$li$Axis2))
@@ -21,9 +23,9 @@ for(g in levels(dfr$group)){
 g<-ggplot2::ggplot(data=dfr, ggplot2::aes(x=x, y=y)) + ggplot2::geom_point(colour=patientcolors, size=1.5, alpha=1)+
   ggplot2::geom_point(data=centroids, ggplot2::aes(x=x, y=y), colour=colors, size=3, shape=43) +
   ggplot2::geom_segment(ggplot2::aes(x=x.centroid, y=y.centroid, xend=x, yend=y), colour=patientcolors, size=0.2)+
+  ggplot2::theme_bw()+
   ggplot2::geom_hline(yintercept = 0)+
   ggplot2::geom_vline(xintercept = 0)+
-  ggplot2::theme_bw()+
   ggplot2::theme(axis.ticks.x = ggplot2::element_blank(), axis.text.x = ggplot2::element_blank())+
   ggplot2::theme(axis.ticks.y = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank())+
   ggplot2::labs(x=deparse(substitute(xdata)), y=deparse(substitute(ydata)), title=title)
