@@ -10,13 +10,17 @@ MAboxplot<-function(gene=NULL,
                     p.value=0.05,
                     sampleNames=NULL,
                     error.bars=TRUE,
-                    print=TRUE){
+                    print=TRUE,
+                    dot.colors=NULL){
   if(class(PDObj)!="PDObj"){stop("PDObj does not appear correct")}
   if(is.null(gene)==TRUE){stop("No gene input")}
   ColObj<-PDObj@ColObj
   classvec<-as.factor(ColObj@classvec)
   line.cols<-ColObj@match$line
-  dot.fill.cols<-ColObj@match$fill
+  if(is.null(dot.colors)==TRUE) {dot.fill.cols<-ColObj@match$fill} else {
+    if(length(dot.colors)!=length(levels(classvec))){stop("Dot colors must be equal to the number of factors")}
+    else{dot.fill.cols<-dot.colors}
+  }
   box.fill.cols<-ColObj@match$fill
   if(is.null(reorder)==FALSE){classvec<-factor(classvec,levels(classvec)[reorder])
   line.cols<-line.cols[reorder]
