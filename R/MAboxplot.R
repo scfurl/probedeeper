@@ -173,7 +173,7 @@ FindContrasts<-function(object){
 }
 
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-  library(grid)
+  #library(grid)
 
   # Make a list from the ... arguments and plotlist
   plots <- c(list(...), plotlist)
@@ -195,7 +195,7 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   } else {
     # Set up the page
     grid::grid.newpage()
-    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    grid::pushViewport(viewport(layout = grid::grid.layout(nrow(layout), ncol(layout))))
 
     # Make each plot, in the correct location
     for (i in 1:numPlots) {
