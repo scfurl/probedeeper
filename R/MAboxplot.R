@@ -9,7 +9,8 @@ MAboxplot<-function(gene=NULL,
                     annotate=TRUE,
                     p.value=0.05,
                     sampleNames=NULL,
-                    error.bars=TRUE){
+                    error.bars=TRUE,
+                    print=TRUE){
   if(class(PDObj)!="PDObj"){stop("PDObj does not appear correct")}
   if(is.null(gene)==TRUE){stop("No gene input")}
   ColObj<-PDObj@ColObj
@@ -110,10 +111,11 @@ MAboxplot<-function(gene=NULL,
       }
     }
     }
-    print(g)
+
     footie1<-ifelse(stat.test=="limma", paste("Mod. Bayesian T statistic corrected using ", PD@LimmaObj@Inputs$p.adjust, sep=""), "Pairwise T Test, FDR-corrected")
     Footnote.txt<-paste("Horizontal bars indicate p <0.05 using ", footie1, sep="")
     makeFootnote(Footnote.txt,  color = "black")
+    if(print==TRUE){print(g)}else{return(g)}
   }
   else
   {
@@ -142,10 +144,11 @@ MAboxplot<-function(gene=NULL,
       }
     }
     }
-    print(g)
+
     footie1<-ifelse(stat.test=="limma", paste("Mod. Bayesian T statistic corrected using ", PDObj@LimmaObj@Inputs$p.adjust, sep=""), "Pairwise T Test, FDR-corrected")
     Footnote.txt<-paste("Horizontal bars indicate p <0.05 using ", footie1, sep="")
     makeFootnote(Footnote.txt,  color = "black")
+    if(print==TRUE){print(g)}else{return(g)}
   }
 }
 
