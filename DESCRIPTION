@@ -20,6 +20,5 @@ Imports:
   plyr,
   limma,
   RColorBrewer,
-  org.Hs.eg.db,
   stringr
 
