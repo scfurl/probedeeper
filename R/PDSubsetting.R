@@ -25,7 +25,7 @@ PD.Subset<-function(PDObj, levels, redoLimma=TRUE, LD=80, element1=NULL,
 
 ColObj.Subset<-function(ColObj, levels, LD=80){
   if(class(ColObj)!="ColObj"){stop("Input does not appear to be a LimmaObj")}
-  if(!all(levels %in% levels(PDObj@ColObj@classvec))){stop("Input incongruent with PDObj classvec")}
+  if(!all(levels %in% levels(ColObj@classvec))){stop("Input incongruent with PDObj classvec")}
   cv.ind<-which(ColObj@classvec %in% levels)
   new.cv<-factor(ColObj@classvec[cv.ind])
   new.assign<-ColObj@assign[ColObj@assign$Group %in% levels(new.cv),]
