@@ -34,3 +34,12 @@ ColObj.Subset<-function(ColObj, levels, LD=80){
 }
 
 
+WriteGPFiles<-function(PD, directory, prefix){
+  ##This function writes GCT and CLS files for a PD object
+  alldata<-exprs(PD@eset)
+  alldata.gct<-alldata[,order(colnames(alldata))]
+  gsea.write.gct(alldata.gct, file.path(directory, paste(prefix, ".gct")))
+  classvec.cls<-PD@ColObj@classvec[order(colnames(alldata))]
+  gsea.write.cls(classvec.cls, file.path(directory, paste(prefix, ".cls")))
+}
+
