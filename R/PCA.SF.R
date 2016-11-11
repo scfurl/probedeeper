@@ -1,5 +1,5 @@
 ####PCA.SF####
-PD.PCAplot<-function(xdata, ydata, ColObj, title, level=0.95, legendtitle="group"){
+PD.PCAplot<-function(xdata, ydata, ColObj, title, pointsize=1.5, level=0.95, legendtitle="group"){
 #library(ggplot2)
 patientcolors<-ColObj@full$line
 colors<-ColObj@match$line
@@ -23,7 +23,7 @@ for(g in levels(dfr$group)){
 }
 g<-ggplot2::ggplot(data=dfr, ggplot2::aes(x=x, y=y, color=group)) +
   ggplot2::theme_bw()+
-  ggplot2::geom_point(size=1.5, alpha=1)+
+  ggplot2::geom_point(size=pointsize, alpha=1)+
  # ggplot2::geom_point(data=centroids, ggplot2::aes(x=x, y=y), color=colors, size=3, shape=43) +
   ggplot2::geom_segment(ggplot2::aes(x=x.centroid, y=y.centroid, xend=x, yend=y), color=patientcolors, size=0.2)+
   ggplot2::geom_hline(yintercept = 0)+
