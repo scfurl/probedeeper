@@ -20,7 +20,7 @@ ColObjInit<-function(ColObj, LD=80, pie=T){
   ColObj@full$fill<-sapply(ColObj@full$line, LightenDarkenColor, LD)
   ColObj@match$line<-colmatch
   ColObj@match$fill<-sapply(colmatch, LightenDarkenColor, LD)
-  if(pie=T){
+  if(pie==T){
   par(mfrow=c(1,2))
   pie(rep(1,length(ColObj@match$line)), col=ColObj@match$line, labels=names(ColObj@match$line), main="Line Colors")
   pie(rep(1,length(ColObj@match$fill)), col=ColObj@match$fill, labels=names(ColObj@match$fill), main="Fill Colors")
