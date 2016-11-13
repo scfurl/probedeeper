@@ -292,7 +292,7 @@ extractMAT<-function(M, dtype="greater", cutoff=0, replace=0){
   return(M)
 }
 
-quickVenn<-function(list, colors=brewer.pal(length(list),"Paired"), plottype = "ChowRuskey"){
+quickVenn<-function(list, colors=brewer.pal(length(list),"Paired"), plottype = "ChowRuskey", plot=T, print=F){
   Vstem <- Venn(list)
   Tstem <- compute.Venn(Vstem)
   gp <- VennThemes(Tstem, colourAlgorithm = "sequential", increasingLineWidth=FALSE)
@@ -307,9 +307,13 @@ quickVenn<-function(list, colors=brewer.pal(length(list),"Paired"), plottype = "
     gp$SetText[[ix]]$col<-venncolors[ix]
     gp$SetText[[ix]]$fontsize<-16
   }
+  if(plot==T){
   plot(Vstem, type=plottype, show = list(SetLabels = TRUE), gp=gp)
+  }
+  if(print==T){
   print(Vstem)
-  return(Vstem)
+  }
+  return(list(Vstem=Vstem, gp=gp))
 }
 
 SFHist<-function(matrix, colors=rainbow(ncol(matrix)), title){
