@@ -1,5 +1,5 @@
 
-LimmaObjCreate<-function(eset, ColObj, element1=NULL, element2=NULL, pvalue.thresh=0.05, lfc.thresh=1, adjust.method="fdr", method="separate", printdata=FALSE){
+LimmaObjCreate<-function(eset, ColObj, element1=NULL, element2=NULL, pvalue.thresh=0.05, lfc.thresh=1, adjust.method="fdr", method="separate", printdata=FALSE, norm.method="unspecified"){
   ####Auto-LIMMA####
   #inputs data.sel, classvec.sel, element1,(2), pvalue.thresh, lfc.thresh
   classvec.sel<-ColObj@classvec
@@ -61,7 +61,7 @@ LimmaObjCreate<-function(eset, ColObj, element1=NULL, element2=NULL, pvalue.thre
 
   LimmaObj@Contrasts<-contrast.df
   #   limmaDE.output[5]<-list(Comparisons.df=data.frame(Comp1=comp1, Comp2=comp2))
-  LimmaObj@Inputs<-list(p.adjust=adjust.method, p.thresh=pvalue.thresh, lfc.thresh=lfc.thresh)
+  LimmaObj@Inputs<-list(p.adjust=adjust.method, p.thresh=pvalue.thresh, lfc.thresh=lfc.thresh, norm.method=norm.method)
   #   if(printdata==TRUE){
   #     print(names(limmaDE.output[[3]]))
   #   }
