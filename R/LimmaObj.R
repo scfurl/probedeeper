@@ -88,7 +88,7 @@ LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGen
   if(class(object)!="LimmaObj"){stop("Input does not appear to be a LimmaObj")}
   files<-paste(prefix, "-", c("GenesUP.xls","GenesDN.xls", "GenesALL.xls"), sep="")
   wb<-list()
-  if(isnull(index)){
+  if(is.null(index)){
     index<-1:length(object@Contrasts$meaning)
   }
   df<-data.frame(str=object@Contrasts$meaning[index], index=index)

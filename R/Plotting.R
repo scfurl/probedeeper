@@ -316,11 +316,18 @@ quickVenn<-function(list, colors=brewer.pal(length(list),"Paired"), plottype = "
   return(list(Vstem=Vstem, gp=gp))
 }
 
-SFHist<-function(matrix, colors=rainbow(ncol(matrix)), title){
+SFHist<-function(matrix, colors=rainbow(ncol(matrix)), title, xlim=NULL, ylim=NULL){
   density.data<-apply(matrix, 2, density)
-  yrange<-max(unlist(lapply(density.data, function(x) max(x$y))))
+  if(is.null(ylim)){
+    yrange<-max(unlist(lapply(density.data, function(x) max(x$y))))
+    ylim<-c(0,yrange)
+  }
+  if(is.null(xlim)){
+    xrange<-max(unlist(lapply(density.data, function(x) max(x$x))))
+    xlim<-c(0,xrange)
+  }
   ncols=ncol(matrix)
-  plot(density(matrix[,1]), col=colors[1], main=title, ylim=c(0,yrange))
+  plot(density(matrix[,1]), col=colors[1], main=title, ylim=ylim, xlim=xlim)
   for(i in 2:ncols){
     lines(density(matrix[,i]), col=colors[i])
   }
