@@ -84,15 +84,19 @@ ExtractLimmaObj<-function(gene, LimmaObj){
 
 
 
-LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGenes"){
+LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGenes", index=NULL){
   if(class(object)!="LimmaObj"){stop("Input does not appear to be a LimmaObj")}
   files<-paste(prefix, "-", c("GenesUP.xls","GenesDN.xls", "GenesALL.xls"), sep="")
   wb<-list()
+  if(isnull(index)){
+    index<-1:length(object@Contrasts$meaning)
+  }
+  df<-data.frame(str=object@Contrasts$meaning[index], index=index)
   for(j in 1:length(files)){
     wb[[j]]<-loadWorkbook(filename=file.path(directory, files[j]), create=TRUE)
   }
   if(type=="AllGenes"){
-    for(i in 1:length(object@Contrasts$meaning)){
+    for(i in df$index){
       dflist<-list(Genesup.df<-object@AllGenes[[i]][object@AllGenes[[i]]$logFC>0,],
                    Genesdn.df<-object@AllGenes[[i]][object@AllGenes[[i]]$logFC<0,], Genesall.df<-object@AllGenes[[i]])
       for(j in 1:length(files)){
@@ -107,7 +111,7 @@ LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGen
     }
   }
   if(type=="DEGenes"){
-    for(i in 1:length(object@Contrasts$meaning)){
+    for(i in df$index){
       dflist<-list(Genesup.df<-object@DEGenes[[i]][object@DEGenes[[i]]$logFC>0,],
                    Genesdn.df<-object@DEGenes[[i]][object@DEGenes[[i]]$logFC<0,], Genesall.df<-object@DEGenes[[i]])
       for(j in 1:length(files)){
@@ -122,6 +126,7 @@ LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGen
     }
   }
 }
+
 
 # makeContrasts.SF<-function(contrast.string) {
 #   contrast.string=c(contrast.string, "levels = mydesign")
