@@ -252,18 +252,22 @@ quickXL<-function(filename=paste(format(Sys.Date(), format="%Y_%m_%d_"), format(
 }
 
 
-quickXL.list<-function(filename=NULL, obj, header=FALSE){
+quickXL.list<-function(filename=NULL, obj, header=FALSE, rownames=TRUE){
   if(class(obj)!="list"){stop("Only lists supported")}
   if(is.null(filename)){stop("Invalid filename")}
   wb<-loadWorkbook(filename=filename, create=TRUE)
   for(i in names(obj)){
-  createSheet(wb, name=i)
-  dat<-obj[[i]]
-  writeWorksheet(wb, dat, sheet=i, header=header)
+    createSheet(wb, name=i)
+    dat<-obj[[i]]
+    if(rownames==TRUE){
+      rowN<-ifelse(header==TRUE, c("", rownames(dat)), rownames(dat))
+    }
+    else
+    {rowN<-NULL}
+    writeWorksheet(wb, dat, sheet=i, header=header, rownames=rowN)
   }
   saveWorkbook(wb)
 }
-
 
 
 readautoLIMMA<-function(limmalist){
