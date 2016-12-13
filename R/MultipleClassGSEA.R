@@ -7,11 +7,11 @@ MultipleClassGSEA<-function(data.GSEA, Comparison1, Comparison2, GMTList, classv
   #   if(os=="Darwin"){GSEA.program.location <- "/Library/Frameworks/R.framework/Resources/library/GSEA/GSEA.1.0.R"}   #  R source program (change pathname to the rigth location in local machine)
   #   source(GSEA.program.location, verbose=T, max.deparse.length=9999)
   datestamp<-format(Sys.Date(), format="%Y%m%d")
-  if(uniquelabel!=""){
-    uniquelabel<-paste("-", uniquelabel, sep="")
+  if(uniquelabel==""){
+    uniquelabel<-datestamp
   }
   mdirectory<-paste(file.path(directory, "GSEA"))
-  rdirectory<-file.path(mdirectory, paste(datestamp, "-", uniquelabel, sep=""))
+  rdirectory<-file.path(mdirectory, uniquelabel)
   fdirectory<-file.path(rdirectory, paste("Files-", datestamp, sep=""))
   odirectory<-file.path(rdirectory, paste("Output-", datestamp, sep=""))
 
