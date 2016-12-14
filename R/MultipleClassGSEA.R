@@ -263,9 +263,14 @@ PlotMultipleEnrichmentPlots<-function(filelist, type=NULL, comp=NULL, geneset=NU
     if(length(geneset)>1)
       {
         for(i in 1:length(geneset)){
-        newlist[[i]]<-filelist[[i]][[comp]]
-        names(newlist)[i]<-paste(names(filelist)[i], names(filelist[[i]])[comp])
+        newlist[[i]]<-filelist[[geneset[i]]][[comp]]
+        names(newlist)[i]<-paste(names(filelist)[geneset[i]], names(filelist[[geneset[i]]])[comp])
         }
+    }
+    if(length(geneset)==1 && length(comp)==1)
+    {
+      newlist<-list(filelist[[geneset]][[comp]])
+      names(newlist)<-paste(names(filelist)[geneset], names(filelist[[geneset]])[comp])
     }
     if(length(comp)>1)
     {
@@ -312,7 +317,8 @@ PlotMultipleEnrichmentPlots<-function(filelist, type=NULL, comp=NULL, geneset=NU
     ggplot2::geom_abline(intercept=0, slope=0)+
     ggplot2::geom_point(data=dflist[[1]], ggplot2::aes(x=LIST.LOC, y=YRUG, size=as.factor(CORE_ENRICHMENT)),colour=plotcols[1], shape=124)+
     #geom_text(data=stats, colour=plotcols[1], ggplot2::aes(label = fdrstats[1], x = -200, y = -0.2))+
-    ggplot2::theme_bw()
+    ggplot2::theme_bw()+
+    ggplot2::theme(legend.position="none")
   if(length(dflist)>1){
     for(i in 2:length(dflist)){
       g<-g+ggplot2::geom_line(data=dflist[[i]], ggplot2::aes(x=LIST.LOC, y=RES), colour=plotcols[i])
