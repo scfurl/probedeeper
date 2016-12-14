@@ -10,7 +10,7 @@ MultipleClassGSEA<-function(data.GSEA, Comparison1, Comparison2, GMTList, classv
   if(uniquelabel==""){
     uniquelabel<-datestamp
   }
-  mdirectory<-paste(file.path(directory, "GSEA"))
+  mdirectory<-file.path(directory)
   rdirectory<-file.path(mdirectory, uniquelabel)
   fdirectory<-file.path(rdirectory, paste("Files-", datestamp, sep=""))
   odirectory<-file.path(rdirectory, paste("Output-", datestamp, sep=""))
@@ -142,25 +142,25 @@ PlotMultipleClassGSEAObject<-function(MCGO, index, plotcols=rep("Black", length(
   }
   fdrstats<-data.frame(FDR=fdr, lRES=lRES, x=x, y=y)
   g<-ggplot2::ggplot() +
-    ggplot2::geom_line(data=dflist[[1]], aes(x=LOC, y=RES), colour=plotcols[1])+
-    ggplot2::geom_vline(data=plotdf[1,], aes(xintercept=dotted), colour=plotcols[1], linetype="dotted", size=0.8)+
+    ggplot2::geom_line(data=dflist[[1]], ggplot2::aes(x=LOC, y=RES), colour=plotcols[1])+
+    ggplot2::geom_vline(data=plotdf[1,], ggplot2::aes(xintercept=dotted), colour=plotcols[1], linetype="dotted", size=0.8)+
     ggplot2::geom_abline(intercept=0, slope=0)+
-    ggplot2::geom_point(data=dflist[[1]],aes(x=LOC, y=YRUG, size=as.factor(ENRICHMENT)),colour=plotcols[1], shape=124)+
-    #geom_text(data=stats, colour=plotcols[1], aes(label = fdrstats[1], x = -200, y = -0.2))+
-    theme_bw()
+    ggplot2::geom_point(data=dflist[[1]],ggplot2::aes(x=LOC, y=YRUG, size=as.factor(ENRICHMENT)),colour=plotcols[1], shape=124)+
+    #geom_text(data=stats, colour=plotcols[1], ggplot2::aes(label = fdrstats[1], x = -200, y = -0.2))+
+    ggplot2::theme_bw()
   if(length(dflist)>1){
     for(i in 2:length(dflist)){
-      g<-g+ggplot2::geom_line(data=dflist[[i]], aes(x=LOC, y=RES), colour=plotcols[i])
-      g<-g+ggplot2::geom_vline(data=plotdf[i,], aes(xintercept=dotted), colour=plotcols[i], linetype="dotted", size=0.8)
-      g<-g+ggplot2::geom_point(data=dflist[[i]],aes(x=LOC, y=YRUG, size=as.factor(ENRICHMENT)),colour=plotcols[i], shape=124)
+      g<-g+ggplot2::geom_line(data=dflist[[i]], ggplot2::aes(x=LOC, y=RES), colour=plotcols[i])
+      g<-g+ggplot2::geom_vline(data=plotdf[i,], ggplot2::aes(xintercept=dotted), colour=plotcols[i], linetype="dotted", size=0.8)
+      g<-g+ggplot2::geom_point(data=dflist[[i]],ggplot2::aes(x=LOC, y=YRUG, size=as.factor(ENRICHMENT)),colour=plotcols[i], shape=124)
       g<-g+ ggplot2::scale_size_manual(values = c(3,6))
       #g<-g+ scale_size_discrete(guide=FALSE)
       g<-g+ ggplot2::theme(legend.position="none")
     }
   }
   g<-g+ ggplot2::labs(title=names(MCGO@Data)[index])
-  #g <-g + geom_text(data=fdrstats, aes(label=FDR, x = rep(-200, nrow(fdrstats)), y = seq(min(lRES), (min(lRES)-(nrow(fdrstats)-1)*0.1), -0.1)), colour=plotcols, parse=FALSE, size=4)
-  g <-g + ggplot2::geom_text(data=fdrstats, aes(label=FDR, x=x, y=y), colour=plotcols, parse=FALSE, size=4)
+  #g <-g + geom_text(data=fdrstats, ggplot2::aes(label=FDR, x = rep(-200, nrow(fdrstats)), y = seq(min(lRES), (min(lRES)-(nrow(fdrstats)-1)*0.1), -0.1)), colour=plotcols, parse=FALSE, size=4)
+  g <-g + ggplot2::geom_text(data=fdrstats, ggplot2::aes(label=FDR, x=x, y=y), colour=plotcols, parse=FALSE, size=4)
   print(g)
   return(g)
 }
@@ -235,40 +235,86 @@ QuickGSEA<-function(data.GSEA, Comp1, Comp2, classvec, GMT, directory, prefix, s
 }
 
 #debug(PlotMultipleEnrichmentPlots)
-PlotMultipleEnrichmentPlots<-function(filelist, plotcols=rep("Black", length(filelist)), stats=FALSE){
+PlotMultipleEnrichmentPlots<-function(filelist, type=NULL, comp=NULL, geneset=NULL, plotcols=rep("Black", length(filelist)), stats=FALSE){
   dflist<-list()
+  if(!any(c("files", "object") %in% type)){
+    stop("You must select a valid type, options are 'files', or 'object'")
+  }
   PlotData<-data.frame(max=numeric(0), min=numeric(0), lRES=numeric(0), uRES=numeric(0), dotted=numeric(0))
+  if(type=="files"){
   for(i in 1:length(filelist)){
     dflist[[i]]<-read.delim(filelist[[i]], header=TRUE)
     max=dflist[[i]]$LIST.LOC[which(dflist[[i]]$RES == max(dflist[[i]]$RES))]
     min=dflist[[i]]$LIST.LOC[which(dflist[[i]]$RES == min(dflist[[i]]$RES))]
     lRES<-dflist[[i]]$RES[which(dflist[[i]]$RES == min(dflist[[i]]$RES))]
     uRES<-dflist[[i]]$RES[which(dflist[[i]]$RES == max(dflist[[i]]$RES))]
-    if(abs(lRES)>(abs(uRES))){dotted<-min} else {dotted<-max}
+    if(abs(lRES)>(abs(uRES))){
+      dotted<-dflist[[i]]$LIST.LOC[min(which(dflist[[i]]$CORE_ENRICHMENT=="YES"))]} 
+    else {
+      dotted<-dflist[[i]]$LIST.LOC[max(which(dflist[[i]]$CORE_ENRICHMENT=="YES"))]}
     PlotData[i,]<-rbind(c(max,min,lRES,uRES, dotted), PlotData)
+  }
+  }
+  if(type=="object"){
+    newlist<-list()
+    if(is.null(comp)){stop("an comp index must be selected for object plotting")}
+    if(is.null(geneset)){stop("a geneset index must be selected for object plotting")}
+    if(comp>1 && geneset >1){stop("can only plot multiple genesets OR comparisons")}
+    if(length(geneset)>1)
+      {
+        for(i in 1:length(geneset)){
+        newlist[[i]]<-filelist[[i]][[comp]]
+        names(newlist)[i]<-paste(names(filelist)[i], names(filelist[[i]])[comp])
+        }
+    }
+    if(length(comp)>1)
+    {
+      for(i in 1:length(comp)){
+        newlist[[i]]<-filelist[[geneset]][[comp[i]]]
+        names(newlist)[i]<-paste(names(filelist)[geneset], names(filelist[[geneset]])[comp[i]])
+      }
+    }
+    for(i in 1:length(newlist)){
+      dflist[[i]]<-newlist[[i]]
+      colnames(dflist[[i]])<-c("RES","LIST.LOC","CORE_ENRICHMENT","GENE")
+      max=dflist[[i]]$LIST.LOC[which(dflist[[i]]$RES == max(dflist[[i]]$RES))][1]
+      min=dflist[[i]]$LIST.LOC[which(dflist[[i]]$RES == min(dflist[[i]]$RES))][1]
+      lRES<-dflist[[i]]$RES[which(dflist[[i]]$RES == min(dflist[[i]]$RES))][1]
+      uRES<-dflist[[i]]$RES[which(dflist[[i]]$RES == max(dflist[[i]]$RES))][1]
+      if(abs(lRES)>(abs(uRES))){
+        dotted<-dflist[[i]]$LIST.LOC[max(which(dflist[[i]]$CORE_ENRICHMENT=="YES"))]} 
+      else {
+        dotted<-dflist[[i]]$LIST.LOC[max(which(dflist[[i]]$CORE_ENRICHMENT=="YES"))]}
+      PlotData[i,]<-rbind(c(max,min,lRES,uRES, dotted), PlotData)
+    }
   }
   x<-vector()
   y<-vector()
   lRES.global<-vector()
-  lRES.global=rep(min(PlotData$lRES), length(filelist))
-  for(i in 1:length(filelist)){
+  lRES.global=rep(min(PlotData$lRES), length(dflist))
+  for(i in 1:length(dflist)){
     x[i]<--300
     y[i]<-lRES.global[i]-((i-1)*.1)
   }
-  for(i in 1:length(filelist)){
+  for(i in 1:length(dflist)){
     YRUG<-rep(y[i], nrow(dflist[[i]]))
     dflist[[i]]<-cbind(dflist[[i]], YRUG, stringsAsFactors=FALSE)
   }
-
+  if(length(plotcols)!=length(newlist)){stop("Color Input Insufficient")}
+  plottitle<-vector()
+  for(i in 1:length(newlist)){
+    plottitle<-c(plottitle, paste(names(newlist)[i], plotcols[i], sep="-"))
+  }
+  plottitle<-paste(plottitle, collapse="\n")
   g<-ggplot2::ggplot() +
     ggplot2::geom_line(data=dflist[[1]], ggplot2::aes(x=LIST.LOC, y=RES), colour=plotcols[1])+
     ggplot2::geom_vline(data=PlotData[1,], ggplot2::aes(xintercept=dotted), colour=plotcols[1], linetype="dotted", size=0.8)+
     ggplot2::geom_abline(intercept=0, slope=0)+
     ggplot2::geom_point(data=dflist[[1]], ggplot2::aes(x=LIST.LOC, y=YRUG, size=as.factor(CORE_ENRICHMENT)),colour=plotcols[1], shape=124)+
-    #geom_text(data=stats, colour=plotcols[1], aes(label = fdrstats[1], x = -200, y = -0.2))+
+    #geom_text(data=stats, colour=plotcols[1], ggplot2::aes(label = fdrstats[1], x = -200, y = -0.2))+
     ggplot2::theme_bw()
-  if(length(filelist)>1){
-    for(i in 2:length(filelist)){
+  if(length(dflist)>1){
+    for(i in 2:length(dflist)){
       g<-g+ggplot2::geom_line(data=dflist[[i]], ggplot2::aes(x=LIST.LOC, y=RES), colour=plotcols[i])
       g<-g+ggplot2::geom_vline(data=PlotData[i,], ggplot2::aes(xintercept=dotted), colour=plotcols[i], linetype="dotted", size=0.8)
       g<-g+ggplot2::geom_point(data=dflist[[i]], ggplot2::aes(x=LIST.LOC, y=YRUG, size=as.factor(CORE_ENRICHMENT)),colour=plotcols[i], shape=124)
@@ -277,6 +323,7 @@ PlotMultipleEnrichmentPlots<-function(filelist, plotcols=rep("Black", length(fil
       g<-g+ ggplot2::theme(legend.position="none")
     }
   }
+  g<-g+ ggplot2::labs(title=plottitle)
   #print(g)
   return(g)
 }
@@ -284,4 +331,10 @@ PlotMultipleEnrichmentPlots<-function(filelist, plotcols=rep("Black", length(fil
 
 ExtractStats<-function(MCGO, index){
   return(MCGO@Stats[[index]][,c(1,2,5,6,7)])
+}
+
+MCGOContents<-function(MCGO){
+  if(class(MCGO)!="MultipleClassGSEAObject"){stop("Input is not MCGO")}
+  out<-list(Genesets=names(MCGO@Data), Comparisons=names(MCGO@Data[[1]]))
+  return(out)
 }
