@@ -42,8 +42,10 @@ gsea.write.gmt<-function(x, fil){ z <- deparse(substitute(x))
                                   nams=names(x)
                                   cat(nams[1],"NULL" , x[[1]], "\n", sep="\t",
                                       file=fil)
-                                for (i in 2:length(x) ){ cat(nams[i],"NULL" , x[[i]], "\n",
+                                  if(length(x)>1){
+                                    for (i in 2:length(x) ){ cat(nams[i],"NULL" , x[[i]], "\n",
                                                               file=fil, sep="\t",append=TRUE) }
+                                  }
 }
 
 
