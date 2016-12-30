@@ -75,3 +75,10 @@ LightenDarkenColor<-function(col, amt) {
   ret<-substr(inter, nchar(inter)-5, nchar(inter))
   return(toupper(paste("#", ret, sep="")))
 }
+
+sliceColObj<-function(ColObj, elements){
+  #This function takes a ColObj input and slices based on a vector of elements
+  if(class(ColObj)!="ColObj"){stop("Input is not a ColObj class")}
+  if(class(elements)!="character"){stop("Element vector is not of the character class")}
+
+}
