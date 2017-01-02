@@ -6,6 +6,13 @@ setClass("LimmaObj", slots=c(
   AllGenes="list",
   Inputs="list"), package="probedeeper")
 
+setClass("ColObj", slots=c(
+  assign="data.frame",
+  classvec="factor",
+  full="list",
+  match="list"), package="probedeeper")
+
+
 setClass("PDObj", slots=c(
   eset="ExpressionSet",
   ColObj="ColObj",
@@ -45,11 +52,6 @@ setClass("DEAnalyzerCalcs", representation(
   PW.UP="list",
   PW.DN="list"))
 
-setClass("ColObj", slots=c(
-  assign="data.frame",
-  classvec="factor",
-  full="list",
-  match="list"), package="probedeeper")
 
 
 
