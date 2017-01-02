@@ -20,5 +20,6 @@ Imports:
   plyr,
   limma,
   RColorBrewer,
-  stringr
+  stringr,
+  biobase
 

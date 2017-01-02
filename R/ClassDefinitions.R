@@ -12,7 +12,7 @@ setClass("ColObj", slots=c(
   full="list",
   match="list"), package="probedeeper")
 
-
+#getClasses("package:Biobase")
 setClass("PDObj", slots=c(
   eset="ExpressionSet",
   ColObj="ColObj",
