@@ -259,7 +259,7 @@ PlotMultipleEnrichmentPlots<-function(filelist, type=NULL, comp=NULL, geneset=NU
     newlist<-list()
     if(is.null(comp)){stop("an comp index must be selected for object plotting")}
     if(is.null(geneset)){stop("a geneset index must be selected for object plotting")}
-    if(comp>1 && geneset >1){stop("can only plot multiple genesets OR comparisons")}
+    if(comp>1 && length(geneset) >1){stop("can only plot multiple genesets OR comparisons")}
     if(length(geneset)>1)
       {
         for(i in 1:length(geneset)){
