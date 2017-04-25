@@ -83,6 +83,11 @@ ExtractLimmaObj<-function(gene, LimmaObj){
 }
 
 
+jgc <- function()
+{
+  .jcall("java/lang/System", method = "gc")
+}
+
 
 LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGenes", index=NULL){
   if(class(object)!="LimmaObj"){stop("Input does not appear to be a LimmaObj")}
@@ -100,6 +105,8 @@ LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGen
       dflist<-list(Genesup.df<-object@AllGenes[[i]][object@AllGenes[[i]]$logFC>0,],
                    Genesdn.df<-object@AllGenes[[i]][object@AllGenes[[i]]$logFC<0,], Genesall.df<-object@AllGenes[[i]])
       for(j in 1:length(files)){
+        jgc()
+        message("Creating sheet ", object@Contrasts$meaning[i])
         createSheet(wb[[j]], name = object@Contrasts$meaning[i])
         writeWorksheet(wb[[j]], dflist[[j]], sheet=object@Contrasts$meaning[i], rownames="Symbol")
         #       if(class(cellstyle)!="character"){

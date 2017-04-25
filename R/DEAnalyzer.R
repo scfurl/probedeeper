@@ -257,14 +257,14 @@ quickXL.list<-function(filename=NULL, obj, header=FALSE, rownames=TRUE){
   if(is.null(filename)){stop("Invalid filename")}
   wb<-loadWorkbook(filename=filename, create=TRUE)
   for(i in names(obj)){
-    createSheet(wb, name=i)
+    createSheet(wb, name=substring(i, 1, 30))
     dat<-obj[[i]]
     if(rownames==TRUE){
       rowN<-ifelse(header==TRUE, c("", rownames(dat)), rownames(dat))
     }
     else
     {rowN<-NULL}
-    writeWorksheet(wb, dat, sheet=i, header=header, rownames=rowN)
+    writeWorksheet(wb, dat, sheet=substring(i, 1, 30), header=header, rownames=rowN)
   }
   saveWorkbook(wb)
 }
@@ -297,7 +297,7 @@ autoDAVID<-function(vector, input="symbol"){
     found<-length(foundgenes)
     print(paste("Found ", found, " Annotated Genes of ", length(vector), " Submitted", sep=""))
   }
-  RDAVIDWebService::setAnnotationCategories(david, c("PANTHER_PATHWAY","BIOCARTA", "REACTOME_PATHWAY","KEGG_PATHWAY"))
+  RDAVIDWebService::setAnnotationCategories(david, c("BIOCARTA", "REACTOME_PATHWAY","KEGG_PATHWAY"))
     Table<-RDAVIDWebService::getFunctionalAnnotationChart(david)
     df<-data.frame(Table@.Data, stringsAsFactors=FALSE)
     colnames(df)<-(Table@names)
