@@ -75,8 +75,8 @@ annotatePerFile<-function(obj1, file=NULL, gene.multiples=FALSE, delete.NA=TRUE,
   ### This function removes unannotated genes ####
   ### This function also calculates median expression for genes that have multiple probes ####
   annotation.file<-read.csv(file, header= TRUE, colClasses='character')
-  gene.i<-which(genecode %in% colnames(annotation.file))
-  probe.i<-which(probecode %in% colnames(annotation.file))
+  gene.i<-which(colnames(annotation.file) %in% genecode)
+  probe.i<-which(colnames(annotation.file) %in% probecode)
   symbol<-data.frame(Symbol=annotation.file[,gene.i], row.names=annotation.file[,probe.i], stringsAsFactors=FALSE)
   #colnames(symbol)<-"Symbol"
   ags<-as.data.frame(symbol[row.names(obj1),], stringsAsFactors=FALSE)
