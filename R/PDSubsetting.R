@@ -9,12 +9,12 @@
 
 PD.Subset<-function(PDObj, levels, redoLimma=TRUE, LD=80, element1=NULL,
                     element2=NULL, pvalue.thresh=0.05, lfc.thresh=1, adjust.method="fdr",
-                    method="separate", printdata=FALSE){
+                    method="separate", printdata=FALSE, pie=F){
   if(class(PDObj)!="PDObj"){stop("Input does not appear to be a LimmaObj")}
   if(!all(levels %in% levels(PDObj@ColObj@classvec))){stop("Input incongruent with PDObj Classvec")}
   cv.ind<-which(PDObj@ColObj@classvec %in% levels)
   new.PDObj<-new("PDObj",
-                 ColObj=ColObj.Subset(PDObj@ColObj, levels, LD),
+                 ColObj=ColObj.Subset(PDObj@ColObj, levels, LD, pie=pie),
                  eset=PDObj@eset[,PDObj@ColObj@classvec %in% levels])
   if(redoLimma==TRUE){
     if(length(levels)<2){stop("Limma Analysis not possible with < 2 contrasts")}
@@ -23,14 +23,19 @@ PD.Subset<-function(PDObj, levels, redoLimma=TRUE, LD=80, element1=NULL,
   return(new.PDObj)
 }
 
-ColObj.Subset<-function(ColObj, levels, LD=80){
+ColObj.Subset<-function(ColObj, levels, LD=80, pie=F){
   if(class(ColObj)!="ColObj"){stop("Input does not appear to be a LimmaObj")}
   if(!all(levels %in% levels(ColObj@classvec))){stop("Input incongruent with PDObj classvec")}
   cv.ind<-which(ColObj@classvec %in% levels)
   new.cv<-factor(ColObj@classvec[cv.ind])
   new.assign<-ColObj@assign[ColObj@assign$Group %in% levels(new.cv),]
   new.ColObj<-new("ColObj", assign=new.assign, classvec=new.cv)
-  return(ColObjInit(new.ColObj, LD))
+  if(pie==T){
+    return(ColObjInit(new.ColObj, LD))
+  }
+  if(pie==F){
+    return(ColObjInit(new.ColObj, LD, pie=F))
+  }
 }
 
 
