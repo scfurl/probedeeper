@@ -106,7 +106,7 @@ MAboxplot<-function(gene=NULL,
                      panel.border = ggplot2::element_blank(),
                      panel.background = ggplot2::element_blank())
     if(nrow(array.ind)==0){
-      print(g)
+      if(print==TRUE){print(g)}else{return(g)}
     }
     else
     {if(error.bars==TRUE){
