@@ -115,10 +115,10 @@ MAboxplot<-function(gene=NULL,
       }
     }
     }
-
+    if(annotate==TRUE){
     footie1<-ifelse(stat.test=="limma", paste("Mod. Bayesian T statistic corrected using ", PD@LimmaObj@Inputs$p.adjust, sep=""), "Pairwise T Test, FDR-corrected")
     Footnote.txt<-paste("Horizontal bars indicate p <0.05 using ", footie1, sep="")
-    makeFootnote(Footnote.txt,  color = "black")
+    makeFootnote(Footnote.txt,  color = "black")}
     if(print==TRUE){print(g)}else{return(g)}
   }
   else
@@ -149,9 +149,11 @@ MAboxplot<-function(gene=NULL,
     }
     }
 
+    if(annotate==TRUE){
     footie1<-ifelse(stat.test=="limma", paste("Mod. Bayesian T statistic corrected using ", PDObj@LimmaObj@Inputs$p.adjust, sep=""), "Pairwise T Test, FDR-corrected")
     Footnote.txt<-paste("Horizontal bars indicate p <0.05 using ", footie1, sep="")
     makeFootnote(Footnote.txt,  color = "black")
+    }
     if(print==TRUE){print(g)}else{return(g)}
   }
 }
