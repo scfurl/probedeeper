@@ -4,7 +4,7 @@
 #reference (i.e for every sample) and 3) a match slot for an ordered list of colors by matching classvec
 
 ColObjInit<-function(ColObj, LD=80, pie=c("summary", "both", "none")){
-  if(pie %in% c("summary", "both", "none")){pie="none"}
+  if(all(pie %in% c("summary", "both", "none"))){pie="none"}
   if(class(ColObj)!="ColObj"){stop("Input is not a ColObj class")}
   selected<-levels(ColObj@classvec)
   ColObj@assign<-ColObj@assign[match(selected,ColObj@assign$Group),]
