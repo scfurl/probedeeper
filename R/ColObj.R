@@ -3,7 +3,7 @@
 #Essentially, the ColObj has three slots 1) an assignment slot 2) a slot for full color
 #reference (i.e for every sample) and 3) a match slot for an ordered list of colors by matching classvec
 
-ColObjInit<-function(ColObj, LD=80, pie=c("summary", "both", "none"){
+ColObjInit<-function(ColObj, LD=80, pie=c("summary", "both", "none")){
   if(pie %in% c("summary", "both", "none")){pie="none"}
   if(class(ColObj)!="ColObj"){stop("Input is not a ColObj class")}
   selected<-levels(ColObj@classvec)
