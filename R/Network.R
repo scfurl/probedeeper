@@ -31,8 +31,8 @@ writeMasterNetworkFile<-function (adjMat, masterFile=NULL, weighted = TRUE,
     if(class(expressionset)!="ExpressionSet"){stop("ExpressionSet not correct")}
     if(class(classvec)!="factor"){stop("Classvec not correct")}
     if(class(comparison)!="numeric"){stop("comparison not correct")}
-    mean1<-exprs(data)[nodeNames,classvec %in% levels(classvec)[comparison][1]]
-    mean2<-exprs(data)[nodeNames,classvec %in% levels(classvec)[comparison][2]]
+    mean1<-exprs(expressionset)[nodeNames,classvec %in% levels(classvec)[comparison][1]]
+    mean2<-exprs(expressionset)[nodeNames,classvec %in% levels(classvec)[comparison][2]]
     FC<-2^(apply(mean1,1,mean)-apply(mean2,1,mean))
     edgeData$FC<-FC[match(edgeData$fromNode, names(FC))]
   }
@@ -90,8 +90,8 @@ exportNetwork.SF<-function (adjMat, edgeFile = NULL, nodeFile = NULL, weighted =
     if(class(expressionset)!="ExpressionSet"){stop("ExpressionSet not correct")}
     if(class(classvec)!="factor"){stop("Classvec not correct")}
     if(class(comparison)!="numeric"){stop("comparison not correct")}
-    mean1<-exprs(data)[nodeNames,classvec %in% levels(classvec)[comparison][1]]
-    mean2<-exprs(data)[nodeNames,classvec %in% levels(classvec)[comparison][2]]
+    mean1<-exprs(expressionset)[nodeNames,classvec %in% levels(classvec)[comparison][1]]
+    mean2<-exprs(expressionset)[nodeNames,classvec %in% levels(classvec)[comparison][2]]
     FC<-2^(apply(mean1,1,mean)-apply(mean2,1,mean))
     nodeData$Expression<-FC[match(nodeData$nodeName, names(FC))]
   }

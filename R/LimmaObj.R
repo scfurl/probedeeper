@@ -93,16 +93,24 @@ jgc <- function()
 # jgc()
 # .jinit()
 
-LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGenes", index=NULL){
+LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGenes", index=NULL, DAVID=F){
+  if(type=="AllGenes" && DAVID==T){stop("please run DAVID mode with DE Genes")}
   if(class(object)!="LimmaObj"){stop("Input does not appear to be a LimmaObj")}
   files<-paste(prefix, "-", c("GenesUP.xls","GenesDN.xls", "GenesALL.xls"), sep="")
+  pfiles<-paste(prefix, "-", c("PW_UP.xls","PW_DN.xls", "PW_ALL.xls"), sep="")
   wb<-list()
+  pwb<-list()
   if(is.null(index)){
     index<-1:length(object@Contrasts$meaning)
   }
   df<-data.frame(str=object@Contrasts$meaning[index], index=index)
   for(j in 1:length(files)){
     wb[[j]]<-loadWorkbook(filename=file.path(directory, files[j]), create=TRUE)
+  }
+  if(DAVID){
+    for(j in 1:length(files)){
+      pwb[[j]]<-loadWorkbook(filename=file.path(directory, pfiles[j]), create=TRUE)
+    }
   }
   if(type=="AllGenes"){
     for(i in df$index){
@@ -135,6 +143,20 @@ LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGen
         #       setCellStyle(wb[[j]], sheet =names(object@InputGeneSet)[i], row =1 , col =1 , cellstyle =cellStyle)
         #       }
         saveWorkbook(wb[[j]])
+      }
+    }
+    if(DAVID){
+      for(j in 1:length(pfiles)){
+        jgc()
+        message("Creating sheet ", object@Contrasts$meaning[i])
+        createSheet(pwb[[j]], name = object@Contrasts$meaning[i])
+        message("Querying DAVID", object@Contrasts$meaning[i])
+        writeWorksheet(pwb[[j]], autoDAVID(rownames(dflist[[j]])), sheet=object@Contrasts$meaning[i], rownames="Symbol")
+        #       if(class(cellstyle)!="character"){
+        #       createCellStyle(wb[[j]], "GeneData")
+        #       setCellStyle(wb[[j]], sheet =names(object@InputGeneSet)[i], row =1 , col =1 , cellstyle =cellStyle)
+        #       }
+        saveWorkbook(pwb[[j]])
       }
     }
   }

@@ -278,7 +278,7 @@ return(toprint)
 autoDAVID<-function(vector, input="symbol"){
   if(!input %in% c("symbol", "ENS")){stop("Input Not Correct")}
   library(org.Hs.eg.db)
-  david<-RDAVIDWebService::DAVIDWebService(email="sfurlan@uw.edu", url="https://david.ncifcrf.gov/webservice/services/DAVIDWebService.DAVIDWebServiceHttpSoap12Endpoint/")
+  david<-RDAVIDWebService::DAVIDWebService$new(email="sfurlan@uw.edu")
   if(input=="symbol"){
     e2s = toTable(org.Hs.egSYMBOL)
     foundgenes<-e2s$gene_id[e2s$symbol %in% vector]
