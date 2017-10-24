@@ -414,3 +414,13 @@ AssignColors<-function(classvec, cols){
   #tcolors<<-tcolor[classvec[classvec!="Healthy.Control"]]
   return(colmatch)
 }
+
+PDViolin<-function(obj, gene){
+  obj.class<-class(obj)
+}
+
+
+
+
+
+
