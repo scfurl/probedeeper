@@ -4,9 +4,6 @@
 ###GSEA on Unaffected Genes####
 <<<<<<< HEAD
 MultipleClassGSEA<-function(data.GSEA, Comparison1, Comparison2, GMTList, classvec=NULL, runGSEAcode=TRUE, reshuffling.type, directory=getwd(), uniquelabel="", abbrev_comp=FALSE){
-=======
-MultipleClassGSEA<-function(data.GSEA, Comparison1, Comparison2, GMTList, classvec=NULL, runGSEAcode=TRUE, reshuffling.type, directory=getwd(), uniquelabel="", abbrev_comp==FALSE){
->>>>>>> 1b1f28dddd566c640f1d11382d4699eee5ac75bf
   #   os<-Sys.info()['sysname']
   #   if(os=="Darwin"){GSEA.program.location <- "/Library/Frameworks/R.framework/Resources/library/GSEA/GSEA.1.0.R"}   #  R source program (change pathname to the rigth location in local machine)
   #   source(GSEA.program.location, verbose=T, max.deparse.length=9999)
