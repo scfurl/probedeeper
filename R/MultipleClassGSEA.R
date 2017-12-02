@@ -2,7 +2,7 @@
 
 
 ###GSEA on Unaffected Genes####
-MultipleClassGSEA<-function(data.GSEA, Comparison1, Comparison2, GMTList, classvec=NULL, runGSEAcode=TRUE, reshuffling.type, directory=getwd(), uniquelabel=""){
+MultipleClassGSEA<-function(data.GSEA, Comparison1, Comparison2, GMTList, classvec=NULL, runGSEAcode=TRUE, reshuffling.type, directory=getwd(), uniquelabel="", abbrev_comp==FALSE){
   #   os<-Sys.info()['sysname']
   #   if(os=="Darwin"){GSEA.program.location <- "/Library/Frameworks/R.framework/Resources/library/GSEA/GSEA.1.0.R"}   #  R source program (change pathname to the rigth location in local machine)
   #   source(GSEA.program.location, verbose=T, max.deparse.length=9999)
@@ -20,10 +20,15 @@ MultipleClassGSEA<-function(data.GSEA, Comparison1, Comparison2, GMTList, classv
   Comp2<-Comparison2
   if(length(Comp1)==1){Comp1<-rep(Comparison1, length(Comparison2))}
   if(length(Comp2)==1){Comp2<-rep(Comparison2, length(Comparison1))}
+  if(abbrev_comp==TRUE) {
+        prefix<-paste(stringr::str_replace_all(stringr::str_replace_all(Comparison1, c("[[:lower:]]"), ""), "([.])", ""),
+        stringr::str_replace_all(stringr::str_replace_all(Comparison2, c("[[:lower:]]"), ""), "([.])", ""), sep="v")
+        }else{
+          prefix<-paste(Comparison1, Comparison2, sep="_vs_")
+        }
   if(length(Comparison2)!=1 && length(Comparison1)!=1){stop("Input Problem")}
   GSEAcomplist<-list(Number=max(c(length(Comparison1), length(Comparison2))), Comp1=Comp1, Comp2=Comp2,
-                     Prefix=paste(stringr::str_replace_all(stringr::str_replace_all(Comparison1, c("[[:lower:]]"), ""), "([.])", ""),
-                                  stringr::str_replace_all(stringr::str_replace_all(Comparison2, c("[[:lower:]]"), ""), "([.])", ""), sep="v"),
+                     Prefix=prefix,
                      Signreverse=!substring(Comparison1,1,1)<substring(Comparison2,1,1))
   Objectinfo<-list(GSEACompList=GSEAcomplist, GMTList=GMTList, Directory=odirectory, TimeStamp=Sys.time())
   MCGO<-new("MultipleClassGSEAObject", ObjectInfo=Objectinfo,
@@ -249,7 +254,7 @@ PlotMultipleEnrichmentPlots<-function(filelist, type=NULL, comp=NULL, geneset=NU
     lRES<-dflist[[i]]$RES[which(dflist[[i]]$RES == min(dflist[[i]]$RES))]
     uRES<-dflist[[i]]$RES[which(dflist[[i]]$RES == max(dflist[[i]]$RES))]
     if(abs(lRES)>(abs(uRES))){
-      dotted<-dflist[[i]]$LIST.LOC[min(which(dflist[[i]]$CORE_ENRICHMENT=="YES"))]} 
+      dotted<-dflist[[i]]$LIST.LOC[min(which(dflist[[i]]$CORE_ENRICHMENT=="YES"))]}
     else {
       dotted<-dflist[[i]]$LIST.LOC[max(which(dflist[[i]]$CORE_ENRICHMENT=="YES"))]}
     PlotData[i,]<-rbind(c(max,min,lRES,uRES, dotted), PlotData)
@@ -287,7 +292,7 @@ PlotMultipleEnrichmentPlots<-function(filelist, type=NULL, comp=NULL, geneset=NU
       lRES<-dflist[[i]]$RES[which(dflist[[i]]$RES == min(dflist[[i]]$RES))][1]
       uRES<-dflist[[i]]$RES[which(dflist[[i]]$RES == max(dflist[[i]]$RES))][1]
       if(abs(lRES)>(abs(uRES))){
-        dotted<-dflist[[i]]$LIST.LOC[max(which(dflist[[i]]$CORE_ENRICHMENT=="YES"))]} 
+        dotted<-dflist[[i]]$LIST.LOC[max(which(dflist[[i]]$CORE_ENRICHMENT=="YES"))]}
       else {
         dotted<-dflist[[i]]$LIST.LOC[max(which(dflist[[i]]$CORE_ENRICHMENT=="YES"))]}
       PlotData[i,]<-rbind(c(max,min,lRES,uRES, dotted), PlotData)

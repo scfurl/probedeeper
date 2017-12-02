@@ -68,13 +68,14 @@ masterannotate<-function(obj1, gene.multiples=FALSE, delete.NA=TRUE, method="max
   return(collapse.object$datETcollapsed)
 }
 
+
 annotatePerFile<-function(obj1, file=NULL, gene.multiples=FALSE, delete.NA=TRUE, method="maxRowVariance", genecode="Symbol", probecode="ID"){
   require(WGCNA)
   ###gene.multiples = t/f allow multiple gene annotations - will make unique symbol names
   ###delete.NA = delete NA annotations; if FALSE will annotate with probe names
   ### This function removes unannotated genes ####
   ### This function also calculates median expression for genes that have multiple probes ####
-  annotation.file<-read.csv(file, header= TRUE, colClasses='character')
+  annotation.file<-read.csv(file, header= TRUE, colClasses='character', comment.char = "#")
   gene.i<-which(colnames(annotation.file) %in% genecode)
   probe.i<-which(colnames(annotation.file) %in% probecode)
   symbol<-data.frame(Symbol=annotation.file[,gene.i], row.names=annotation.file[,probe.i], stringsAsFactors=FALSE)
@@ -112,6 +113,73 @@ annotatePerFile<-function(obj1, file=NULL, gene.multiples=FALSE, delete.NA=TRUE,
   ###SELECTION FUNCTIONS###
   collapse.object=collapseRows(datET=sel.obj.an, rowGroup=Symbol, rowID=rownames(sel.obj.an), method=method)
   return(collapse.object$datETcollapsed)
+}
+
+
+
+annotatePerFileNEW<-function(obj1, file=NULL, gene.multiples=FALSE, delete.NA=TRUE, method="maxRowVariance", genecode="Symbol", probecode="ID"){
+  require(WGCNA)
+  require(data.table)
+  type="matrix"
+  if(class(obj1)=="ExpressionSet"){type="eset"}
+  if(type=="eset"){
+    eset_pre<-obj1
+    obj1<-exprs(obj1)
+    }
+  ###gene.multiples = t/f allow multiple gene annotations - will make unique symbol names
+  ###delete.NA = delete NA annotations; if FALSE will annotate with probe names
+  ### This function removes unannotated genes ####
+  ### This function also calculates median expression for genes that have multiple probes ####
+  annotation.file<-fread(file, header= TRUE, colClasses='character', sep=",")
+  gene.i<-which(colnames(annotation.file) %in% genecode)
+  probe.i<-which(colnames(annotation.file) %in% probecode)
+  symbol<-data.table(annotation.file[,..gene.i], annotation.file[,..probe.i], keep.rownames = F)
+  ags<-symbol[match(rownames(obj1), symbol[[probecode]])]
+  obj1.an<-as.data.frame(obj1, stringsAsFactors=FALSE)
+  obj1.an$Symbol<-ags[[genecode]]
+  obj2.an<-obj1.an[complete.cases(obj1.an),]
+  obj2.pr<-obj1.an[is.na(obj1.an$Symbol==TRUE),]
+  ###For no selection and all data preserved###
+  if(delete.NA==FALSE && gene.multiples ==TRUE){
+    rownames(obj2.an)<-make.unique(obj2.an$Symbol, sep = "#")
+    obj2.an$Symbol<-NULL
+    obj2.pr$Symbol<-NULL
+    final<-rbind(obj2.an, obj2.pr)
+    return(final)}
+  ###For no selection and eliminate NA###
+  if(delete.NA==TRUE && gene.multiples ==TRUE){
+    rownames(obj2.an)<-make.unique(obj2.an$Symbol, sep = "#")
+    obj2.an$Symbol<-NULL
+    return(obj2.an)}
+  ####For selection and eliminated NA####
+  if(delete.NA==TRUE && gene.multiples ==FALSE){
+    sel.obj.an<-obj2.an
+    Symbol<-sel.obj.an$Symbol
+    sel.obj.an$Symbol<-NULL
+  }
+  if(delete.NA==FALSE && gene.multiples ==FALSE){
+    obj2.pr$Symbol<-rownames(obj2.pr)
+    sel.obj.an<-rbind(obj2.an, obj2.pr)
+    Symbol<-sel.obj.an$Symbol
+    sel.obj.an$Symbol<-NULL
+  }
+  ###SELECTION FUNCTIONS###
+  collapse.object=collapseRows(datET=sel.obj.an, rowGroup=Symbol, rowID=rownames(sel.obj.an), method=method)
+  if(type=="matrix") return(collapse.object$datETcollapsed)
+  if(type=="eset") {
+    eset_post<-ExpressionSet(assayData = collapse.object$datETcollapsed)
+    pd<-pData(eset_pre)
+    phenoData(eset_post)<-AnnotatedDataFrame(pd)
+    return(eset_post)
+  }
+}
+
+
+
+screenAnnotationFile<-function(file){
+  require(data.table)
+  annotation.file<-fread(file, header= TRUE, colClasses='character', sep=",")
+  return(annotation.file)
 }
 
 
