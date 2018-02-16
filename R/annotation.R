@@ -117,7 +117,7 @@ annotatePerFile<-function(obj1, file=NULL, gene.multiples=FALSE, delete.NA=TRUE,
 
 
 
-annotatePerFileNEW<-function(obj1, file=NULL, gene.multiples=FALSE, delete.NA=TRUE, method="maxRowVariance", genecode="Symbol", probecode="ID"){
+annotatePerFileNEW<-function(obj1, file=NULL, gene.multiples=FALSE, delete.NA=TRUE, method="maxRowVariance", genecode="Symbol", probecode="ID", notfound="---"){
   require(WGCNA)
   require(data.table)
   type="matrix"
@@ -131,10 +131,17 @@ annotatePerFileNEW<-function(obj1, file=NULL, gene.multiples=FALSE, delete.NA=TR
   ### This function removes unannotated genes ####
   ### This function also calculates median expression for genes that have multiple probes ####
   annotation.file<-fread(file, header= TRUE, colClasses='character', sep=",")
-  gene.i<-which(colnames(annotation.file) %in% genecode)
-  probe.i<-which(colnames(annotation.file) %in% probecode)
-  symbol<-data.table(annotation.file[,..gene.i], annotation.file[,..probe.i], keep.rownames = F)
-  ags<-symbol[match(rownames(obj1), symbol[[probecode]])]
+  genei<-which(colnames(annotation.file) %in% genecode)
+  probei<-which(colnames(annotation.file) %in% probecode)
+  symbol<-data.table(annotation.file[,..genei], annotation.file[,..probei], keep.rownames = F)
+  #colnames(symbol)<-c(genecode, probecode)
+  ags<-symbol[match(rownames(obj1), symbol[[probecode]]),]
+  symbol[[genecode]][which(symbol==notfound)]<-symbol[[probecode]][which(symbol==notfound)]
+  #symbol[match(rownames(obj1)[3434], symbol[[probecode]]),]
+  #symbol[which(symbol$gene_symbol=="FOXP3"),]$probeset_id
+  #which(rownames(obj1)=="8172631")
+  #8172631
+  #which(symbol$probeset_id=="8172631")
   obj1.an<-as.data.frame(obj1, stringsAsFactors=FALSE)
   obj1.an$Symbol<-ags[[genecode]]
   obj2.an<-obj1.an[complete.cases(obj1.an),]

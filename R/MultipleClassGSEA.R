@@ -71,20 +71,23 @@ MultipleClassGSEA<-function(data.GSEA, Comparison1, Comparison2, GMTList, classv
       ###CREATE DF of MCGO DATA
       regex<-paste("^",GSEAcomplist$Prefix[i], ".", names(GMTList)[j], ".report.",sep="")
       filename<-grep(regex, list.files(wdirectory), value=TRUE)
-      Rep<-read.delim(paste(wdirectory, filename, sep=""), header=TRUE, stringsAsFactors=FALSE)
-      df<-data.frame()
-      #yrug<--(.2+(.1*(i-1)))
-      df<-cbind.data.frame(as.numeric(Rep$RES), as.numeric(Rep$LIST.LOC), as.character(Rep$CORE_ENRICHMENT), as.character(Rep$GENE))
-      colnames(df)<-c("RES", "LOC", "ENRICHMENT", "GENE")
-      MCGO@Data[[j]][[i]]<-df
-      names(MCGO@Data[[j]])[i]<-GSEAcomplist$Prefix[i]
-      ###CREATE DF of MCGO PLOTDATA
-      max=df$LOC[which(df$RES == max(df$RES))][1]
-      min=df$LOC[which(df$RES == min(df$RES))][1]
-      lRES<-df$RES[which(df$RES == min(df$RES))][1]
-      uRES<-df$RES[which(df$RES == max(df$RES))][1]
-      if(abs(lRES)>(abs(uRES))){dotted<-min} else {dotted<-max}
-      MCGO@PlotData[[j]][i,]<-c(max,min,lRES,uRES, dotted)
+      #browser()
+      if(length(filename)==0){df<-data.frame(File="notfound", regex=regex, GMTEntry = names(GMTList)[j])}else{
+        Rep<-read.delim(paste(wdirectory, filename, sep=""), header=TRUE, stringsAsFactors=FALSE)
+        df<-data.frame()
+        #yrug<--(.2+(.1*(i-1)))
+        df<-cbind.data.frame(as.numeric(Rep$RES), as.numeric(Rep$LIST.LOC), as.character(Rep$CORE_ENRICHMENT), as.character(Rep$GENE))
+        colnames(df)<-c("RES", "LOC", "ENRICHMENT", "GENE")
+        MCGO@Data[[j]][[i]]<-df
+        names(MCGO@Data[[j]])[i]<-GSEAcomplist$Prefix[i]
+        ###CREATE DF of MCGO PLOTDATA
+        max=df$LOC[which(df$RES == max(df$RES))][1]
+        min=df$LOC[which(df$RES == min(df$RES))][1]
+        lRES<-df$RES[which(df$RES == min(df$RES))][1]
+        uRES<-df$RES[which(df$RES == max(df$RES))][1]
+        if(abs(lRES)>(abs(uRES))){dotted<-min} else {dotted<-max}
+        MCGO@PlotData[[j]][i,]<-c(max,min,lRES,uRES, dotted)
+      }
       #ystats<-vector()
       #         for(i in 1:length(filelist)){
       #           df<-dflist[[i]]
@@ -349,3 +352,41 @@ MCGOContents<-function(MCGO){
   out<-list(Genesets=names(MCGO@Data), Comparisons=names(MCGO@Data[[1]]))
   return(out)
 }
+
+
+
+
+
+EnrichmentPlot<- function (df, size = 1, line = FALSE, rug=TRUE, dotcolor = "white", highlight_le = TRUE, fillcolor = c("grey68", "red")) 
+{
+  y = df$RES
+  x= df$LOC
+  if(highlight_le){le = fillcolor[as.factor(df$ENRICHMENT)]}else{le = as.factor(df$ENRICHMENT)}
+  maxtop = max(df$RES)
+  minbot = min(df$RES)
+  df$YRUG<-rep((minbot - .1), nrow(df))
+  toPlot<-data.frame(x=x, y=y, le = le, YRUG = df$YRUG)
+  g <- ggplot(toPlot, aes(x = x, y = y)) + 
+  {if(line)geom_line(color = "black")}+
+    geom_hline(yintercept = 0, colour = "black") +
+    {if(highlight_le) geom_point(size = size, shape=21, fill = le, color = dotcolor) } + 
+    {if(!highlight_le) geom_point(size = size, shape=21, fill = fillcolor[1], color = dotcolor) } + 
+    #geom_hline(yintercept = maxtop, colour = "red", linetype = "dashed") + 
+    #geom_hline(yintercept = minbot, colour = "red", linetype = "dashed") +
+    theme_bw() + 
+    {if(rug && highlight_le) geom_point(aes(x=x, y=YRUG, size=le, color = le), shape=124)}+
+    {if(rug && !isTRUE(highlight_le) ) geom_point(aes(x=x, y=YRUG, color = fillcolor[1]), shape=124)}+
+    scale_color_manual(values = fillcolor, guide =FALSE)+
+    theme(panel.border = element_blank(), panel.grid.minor = element_blank()) + 
+    labs(x = "Rank", y = "Enrichment Score")+
+    theme(legend.position="none")
+  g
+}
+
+
+
+
+
+
+
+
