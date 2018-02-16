@@ -1,5 +1,8 @@
 
-LimmaObjCreate<-function(eset, ColObj, element1=NULL, element2=NULL, pvalue.thresh=0.05, lfc.thresh=1, adjust.method="fdr", method="separate", printdata=FALSE, norm.method="unspecified"){
+LimmaObjCreate<-function(eset,
+                         ColObj,
+                         element1=NULL,
+                         element2=NULL, pvalue.thresh=0.05, lfc.thresh=1, adjust.method="fdr", method="separate", printdata=FALSE, norm.method="unspecified"){
   ####Auto-LIMMA####
   #inputs data.sel, classvec.sel, element1,(2), pvalue.thresh, lfc.thresh
   classvec.sel<-ColObj@classvec
@@ -85,47 +88,57 @@ ExtractLimmaObj<-function(gene, LimmaObj){
 
 jgc <- function()
 {
-  require(rJava)
   .jcall("java/lang/System", method = "gc")
 }
 
-# library(rJava)
-# jgc()
-# .jinit()
 
-LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGenes", index=NULL, DAVID=F){
-  if(type=="AllGenes" && DAVID==T){stop("please run DAVID mode with DE Genes")}
+LimmaObj2XL<-function(object,
+                      directory=get.wd(),
+                      prefix="LimmaObj",
+                      type="DEGenes",
+                      index=NULL,
+                      method="openxlsx"){
   if(class(object)!="LimmaObj"){stop("Input does not appear to be a LimmaObj")}
   files<-paste(prefix, "-", c("GenesUP.xls","GenesDN.xls", "GenesALL.xls"), sep="")
-  pfiles<-paste(prefix, "-", c("PW_UP.xls","PW_DN.xls", "PW_ALL.xls"), sep="")
   wb<-list()
-  pwb<-list()
   if(is.null(index)){
     index<-1:length(object@Contrasts$meaning)
   }
   df<-data.frame(str=object@Contrasts$meaning[index], index=index)
-  for(j in 1:length(files)){
-    wb[[j]]<-loadWorkbook(filename=file.path(directory, files[j]), create=TRUE)
-  }
-  if(DAVID){
+  if(method=="XLConnect"){
     for(j in 1:length(files)){
-      pwb[[j]]<-loadWorkbook(filename=file.path(directory, pfiles[j]), create=TRUE)
+      wb[[j]]<-XLConnect::loadWorkbook(filename=file.path(directory, files[j]), create=TRUE)
+    }
+  }else{
+    for(j in 1:length(files)){
+      wb[[j]]<-createWorkbook()
     }
   }
   if(type=="AllGenes"){
     for(i in df$index){
       dflist<-list(Genesup.df<-object@AllGenes[[i]][object@AllGenes[[i]]$logFC>0,],
                    Genesdn.df<-object@AllGenes[[i]][object@AllGenes[[i]]$logFC<0,], Genesall.df<-object@AllGenes[[i]])
-      for(j in 1:length(files)){
-        jgc()
-        message("Creating sheet ", object@Contrasts$meaning[i])
-        createSheet(wb[[j]], name = object@Contrasts$meaning[i])
-        writeWorksheet(wb[[j]], dflist[[j]], sheet=object@Contrasts$meaning[i], rownames="Symbol")
-        #       if(class(cellstyle)!="character"){
-        #       createCellStyle(wb[[j]], "GeneData")
-        #       setCellStyle(wb[[j]], sheet =names(object@InputGeneSet)[i], row =1 , col =1 , cellstyle =cellStyle)
-        #       }
-        saveWorkbook(wb[[j]])
+      if(method=="XLConnect"){
+        for(j in 1:length(files)){
+          jgc()
+          message("Creating sheet ", object@Contrasts$meaning[i])
+          createSheet(wb[[j]], name = object@Contrasts$meaning[i])
+          writeWorksheet(wb[[j]], dflist[[j]], sheet=object@Contrasts$meaning[i], rownames="Symbol")
+          #       if(class(cellstyle)!="character"){
+          #       createCellStyle(wb[[j]], "GeneData")
+          #       setCellStyle(wb[[j]], sheet =names(object@InputGeneSet)[i], row =1 , col =1 , cellstyle =cellStyle)
+          #       }
+          saveWorkbook(wb[[j]])
+          xlcFreeMemory()
+          xlcMemoryReport()
+        }
+      }else{
+        for(j in 1:length(files)){
+          message("Creating sheet ", object@Contrasts$meaning[i])
+          addWorksheet(wb[[j]], sheetName = object@Contrasts$meaning[i])
+          writeData(wb = wb[[j]], sheet = object@Contrasts$meaning[i], x = dflist[[j]], borders = "n", rowNames = TRUE)
+          saveWorkbook(wb[[j]], file.path(directory, files[j]), overwrite = TRUE)
+        }
       }
     }
   }
@@ -133,30 +146,23 @@ LimmaObj2XL<-function(object, directory=get.wd(), prefix="LimmaObj", type="DEGen
     for(i in df$index){
       dflist<-list(Genesup.df<-object@DEGenes[[i]][object@DEGenes[[i]]$logFC>0,],
                    Genesdn.df<-object@DEGenes[[i]][object@DEGenes[[i]]$logFC<0,], Genesall.df<-object@DEGenes[[i]])
-      for(j in 1:length(files)){
-        jgc()
-        message("Creating sheet ", object@Contrasts$meaning[i])
-        createSheet(wb[[j]], name = object@Contrasts$meaning[i])
-        writeWorksheet(wb[[j]], dflist[[j]], sheet=object@Contrasts$meaning[i], rownames="Symbol")
-        #       if(class(cellstyle)!="character"){
-        #       createCellStyle(wb[[j]], "GeneData")
-        #       setCellStyle(wb[[j]], sheet =names(object@InputGeneSet)[i], row =1 , col =1 , cellstyle =cellStyle)
-        #       }
-        saveWorkbook(wb[[j]])
-      }
-    }
-    if(DAVID){
-      for(j in 1:length(pfiles)){
-        jgc()
-        message("Creating sheet ", object@Contrasts$meaning[i])
-        createSheet(pwb[[j]], name = object@Contrasts$meaning[i])
-        message("Querying DAVID", object@Contrasts$meaning[i])
-        writeWorksheet(pwb[[j]], autoDAVID(rownames(dflist[[j]])), sheet=object@Contrasts$meaning[i], rownames="Symbol")
-        #       if(class(cellstyle)!="character"){
-        #       createCellStyle(wb[[j]], "GeneData")
-        #       setCellStyle(wb[[j]], sheet =names(object@InputGeneSet)[i], row =1 , col =1 , cellstyle =cellStyle)
-        #       }
-        saveWorkbook(pwb[[j]])
+      if(method=="XLConnect"){
+        for(j in 1:length(files)){
+          createSheet(wb[[j]], name = object@Contrasts$meaning[i])
+          writeWorksheet(wb[[j]], dflist[[j]], sheet=object@Contrasts$meaning[i], rownames="Symbol")
+          #       if(class(cellstyle)!="character"){
+          #       createCellStyle(wb[[j]], "GeneData")
+          #       setCellStyle(wb[[j]], sheet =names(object@InputGeneSet)[i], row =1 , col =1 , cellstyle =cellStyle)
+          #       }
+          saveWorkbook(wb[[j]])
+        }
+      }else{
+        for(j in 1:length(files)){
+          message("Creating sheet ", object@Contrasts$meaning[i])
+          addWorksheet(wb[[j]], sheetName = object@Contrasts$meaning[i])
+          writeData(wb = wb[[j]], sheet = object@Contrasts$meaning[i], x = dflist[[j]], borders = "n", rowNames = TRUE)
+          saveWorkbook(wb[[j]], file.path(directory, files[j]), overwrite = TRUE)
+        }
       }
     }
   }
