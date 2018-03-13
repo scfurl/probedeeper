@@ -354,39 +354,39 @@ MCGOContents<-function(MCGO){
 }
 
 
-
-
-
-EnrichmentPlot<- function (df, size = 1, line = FALSE, rug=TRUE, dotcolor = "white", highlight_le = TRUE, fillcolor = c("grey68", "red")) 
-{
-  y = df$RES
-  x= df$LOC
-  if(highlight_le){le = fillcolor[as.factor(df$ENRICHMENT)]}else{le = as.factor(df$ENRICHMENT)}
-  maxtop = max(df$RES)
-  minbot = min(df$RES)
-  df$YRUG<-rep((minbot - .1), nrow(df))
-  toPlot<-data.frame(x=x, y=y, le = le, YRUG = df$YRUG)
-  g <- ggplot(toPlot, aes(x = x, y = y)) + 
-  {if(line)geom_line(color = "black")}+
-    geom_hline(yintercept = 0, colour = "black") +
-    {if(highlight_le) geom_point(size = size, shape=21, fill = le, color = dotcolor) } + 
-    {if(!highlight_le) geom_point(size = size, shape=21, fill = fillcolor[1], color = dotcolor) } + 
-    #geom_hline(yintercept = maxtop, colour = "red", linetype = "dashed") + 
-    #geom_hline(yintercept = minbot, colour = "red", linetype = "dashed") +
-    theme_bw() + 
-    {if(rug && highlight_le) geom_point(aes(x=x, y=YRUG, size=le, color = le), shape=124)}+
-    {if(rug && !isTRUE(highlight_le) ) geom_point(aes(x=x, y=YRUG, color = fillcolor[1]), shape=124)}+
-    scale_color_manual(values = fillcolor, guide =FALSE)+
-    theme(panel.border = element_blank(), panel.grid.minor = element_blank()) + 
-    labs(x = "Rank", y = "Enrichment Score")+
-    theme(legend.position="none")
-  g
-}
-
-
-
-
-
-
-
-
+#
+#
+#
+# EnrichmentPlot<- function (df, size = 1, line = FALSE, rug=TRUE, dotcolor = "white", highlight_le = TRUE, fillcolor = c("grey68", "red"))
+# {
+#   y = df$RES
+#   x= df$LOC
+#   if(highlight_le){le = fillcolor[as.factor(df$ENRICHMENT)]}else{le = as.factor(df$ENRICHMENT)}
+#   maxtop = max(df$RES)
+#   minbot = min(df$RES)
+#   df$YRUG<-rep((minbot - .1), nrow(df))
+#   toPlot<-data.frame(x=x, y=y, le = le, YRUG = df$YRUG)
+#   g <- ggplot(toPlot, aes(x = x, y = y)) +
+#   {if(line)geom_line(color = "black")}+
+#     geom_hline(yintercept = 0, colour = "black") +
+#     {if(highlight_le) geom_point(size = size, shape=21, fill = le, color = dotcolor) } +
+#     {if(!highlight_le) geom_point(size = size, shape=21, fill = fillcolor[1], color = dotcolor) } +
+#     #geom_hline(yintercept = maxtop, colour = "red", linetype = "dashed") +
+#     #geom_hline(yintercept = minbot, colour = "red", linetype = "dashed") +
+#     theme_bw() +
+#     {if(rug && highlight_le) geom_point(aes(x=x, y=YRUG, size=le, color = le), shape=124)}+
+#     {if(rug && !isTRUE(highlight_le) ) geom_point(aes(x=x, y=YRUG, color = fillcolor[1]), shape=124)}+
+#     scale_color_manual(values = fillcolor, guide =FALSE)+
+#     theme(panel.border = element_blank(), panel.grid.minor = element_blank()) +
+#     labs(x = "Rank", y = "Enrichment Score")+
+#     theme(legend.position="none")
+#   g
+# }
+#
+#
+#
+#
+#
+#
+#
+#
