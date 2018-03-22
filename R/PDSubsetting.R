@@ -37,7 +37,7 @@ PD.Subset<-function(PDObj, bylevels=NULL, bycolumns=NULL, redoLimma=TRUE, LD=80,
   return(new.PDObj)
 }
 
-debug(ColObj.Subset)
+#debug(ColObj.Subset)
 
 
 ColObj.Subset<-function(ColObj, levels, LD=80, pie=F){
