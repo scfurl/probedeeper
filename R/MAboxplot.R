@@ -11,9 +11,12 @@ MAboxplot<-function(gene=NULL,
                     sampleNames=NULL,
                     error.bars=TRUE,
                     print=TRUE,
-                    dot.colors=NULL){
+                    dot.colors=NULL,
+                    gene.short=F,
+                    gene.short.name="Symbol"){
   if(class(PDObj)!="PDObj"){stop("PDObj does not appear correct")}
   if(is.null(gene)==TRUE){stop("No gene input")}
+  if(gene.short){if(!gene.short.name %in% colnames(fData(PDObj@eset))){stop("Gene Short Column not found in fData of PD Object")}}
   ColObj<-PDObj@ColObj
   classvec<-as.factor(ColObj@classvec)
   line.cols<-ColObj@match$line
@@ -85,6 +88,7 @@ MAboxplot<-function(gene=NULL,
     colnames(array.ind)<-c("start","end")
     array.ind$y<-seq(from=maxh+0.5*(spread), by=spread/2, length.out=nrow(array.ind))
   }
+  if(gene.short){gene<-fData(PD@eset)[[gene.short.name]][rownames(fData(PD@eset)) %in% gene]}
   #add sampleNames to df
   if(length(sampleNames)!=0){
     df$sampleNames<-sampleNames
