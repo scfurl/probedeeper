@@ -288,6 +288,7 @@ for(i in 1:length(GSEAcomplist[["Number"]])){
 }
 }
 
+
 gsea.read.gct<-function(fn="NULL", allowDuplicatedRows=FALSE){
   df<-read.delim(fn, skip=2, stringsAsFactors=FALSE)
   df<-df[-which(colnames(df)=="Description")]
@@ -303,6 +304,37 @@ gsea.read.gct<-function(fn="NULL", allowDuplicatedRows=FALSE){
     warning("Duplicates Removed")
     df<-df[-which(colnames(df)=="Name")]
     return(as.matrix(df))
+  }
+}
+
+
+
+readGCTasDT<-function(fn="NULL", allowDuplicatedRows=FALSE, designator="Name", description_col_blank=F, description_designator="Description"){
+  if(description_col_blank){
+    skip<-3
+    cn<-unlist(strsplit(readLines(file.path(RES_DIR, "ssGSEA", "180713", "-combined.gct"), n=3)[3], "\t"))
+    colnames<-cn[-c(1:2)]
+    designator<-cn[1]
+    df<-data.table::fread(fn, skip=skip, stringsAsFactors=FALSE)
+    colnames(df)<-c(designator, colnames)
+    df[[description_designator]]<-rep("na", nrow(df))
+    data.table::setcolorder(df, c(designator, description_designator, colnames[-1]))
+  }else{
+    skip<-2
+    df<-data.table::fread(fn, skip=skip, stringsAsFactors=FALSE)
+    df<-df[-which(colnames(df)==description_designator)]
+  }
+  if(allowDuplicatedRows==TRUE){
+    rownames(df)<-make.unique(df[[designator]])
+    df<-df[-which(colnames(df)==designator)]
+    return(df)
+  }
+  else{
+    df<-df[!duplicated(df[[designator]]),]
+    rownames(df)<-df[[designator]]
+    warning("Duplicates Removed")
+    df<-df[-which(colnames(df)==designator)]
+    return(df)
   }
 }
 
