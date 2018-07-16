@@ -252,21 +252,43 @@ quickXL<-function(filename=paste(format(Sys.Date(), format="%Y_%m_%d_"), format(
 }
 
 
-quickXL.list<-function(filename=NULL, obj, header=FALSE, rownames=TRUE){
-  if(class(obj)!="list"){stop("Only lists supported")}
-  if(is.null(filename)){stop("Invalid filename")}
-  wb<-loadWorkbook(filename=filename, create=TRUE)
-  for(i in names(obj)){
-    createSheet(wb, name=substring(i, 1, 30))
-    dat<-obj[[i]]
-    if(rownames==TRUE){
-      rowN<-ifelse(header==TRUE, c("", rownames(dat)), rownames(dat))
-    }
-    else
-    {rowN<-NULL}
-    writeWorksheet(wb, dat, sheet=substring(i, 1, 30), header=header, rownames=rowN)
+quickXL.list<-function(filename=NULL, obj, header=FALSE, rownames=TRUE, method=c("openxlsx", "XLConnect"), overwrite=F){
+  if(class(obj)!="list"){
+    obj<-list(Sheet1=obj)
   }
-  saveWorkbook(wb)
+  if(is.null(filename)){stop("Invalid filename")}
+  method<-match.arg(method)
+  if(method=="XLConnect"){
+    wb<-XLConnect::loadWorkbook(filename=filename, create=TRUE)
+    for(i in names(obj)){
+      XLConnect::createSheet(wb, name=substring(i, 1, 30))
+      dat<-obj[[i]]
+      if(rownames==TRUE){
+        rowN<-ifelse(header==TRUE, c("", rownames(dat)), rownames(dat))
+      }
+      else
+      {rowN<-NULL}
+      XLConnect::writeWorksheet(wb, dat, sheet=substring(i, 1, 30), header=header, rownames=rowN)
+    }
+    XLConnect::saveWorkbook(wb)
+    message("Workbook Written")
+  }
+  if(method=="openxlsx"){
+    hs1 <- openxlsx::createStyle(fgFill = "#DCE6F1", halign = "CENTER", textDecoration = "italic",
+                       border = "Bottom")
+    wb<-openxlsx::createWorkbook()
+    for(i in names(obj)){
+      openxlsx::addWorksheet(wb, sheetName=substring(i, 1, 30))
+      dat<-obj[[i]]
+      if(rownames==TRUE){
+        rowN<-ifelse(header==TRUE, c("", rownames(dat)), rownames(dat))
+      }else{
+        rowN<-NULL}
+      openxlsx::writeData(wb=wb, x=dat, sheet=substring(i, 1, 30), headerStyle = hs1)
+    }
+    openxlsx::saveWorkbook(wb, file=filename, overwrite = overwrite)
+    message("Workbook Written")
+  }
 }
 
 

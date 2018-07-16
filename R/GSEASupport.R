@@ -334,6 +334,7 @@ readGCTasDT<-function(fn="NULL", allowDuplicatedRows=FALSE, designator="Name", d
     rownames(df)<-df[[designator]]
     warning("Duplicates Removed")
     df<-df[-which(colnames(df)==designator)]
+
     return(df)
   }
 }
